@@ -1,0 +1,1 @@
+export * from './pages/proveedor-list/proveedor-list.component';
