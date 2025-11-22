@@ -24,6 +24,7 @@ export class ProveedorListComponent {
         this.proveedores = data;
         console.log('Proveedores cargados:', this.proveedores);
         //asignarlo a una tabla, create camioneros, un alta de transportistas, de transporte
+        //cambiando
       },
       error: (err) => {
         console.error('Error al cargar proveedores', err);
