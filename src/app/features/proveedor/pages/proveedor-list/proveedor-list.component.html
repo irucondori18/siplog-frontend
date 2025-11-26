@@ -1,1 +1,19 @@
 <p>proveedor-list works!</p>
+
+<table class="table" cTable color="dark">
+    <thead>
+        <tr>
+            <!--columnas-->
+            <th scope="col">Id_Proveedor</th>
+            <th scope="col">Descripcion</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let lista of listaProveedores">
+            <th scope="row">{{lista.id_proveedor}}</th>
+            <td>{{lista.descripcion}}</td>
+           
+        </tr>
+    </tbody>
+</table>
