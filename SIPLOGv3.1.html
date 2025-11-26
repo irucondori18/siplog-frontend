@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <!--comentario de prueba...para la subida-->>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>SIPLOG JUJUY | Monitor Bioceánico</title>
@@ -263,7 +263,7 @@
             <div class="flex-1 relative bg-slate-800 w-full h-full">
                 <div id="map" class="w-full h-full block"></div>
 
-                <!-- NOTIFICATION CONTAINER (NUEVO) -->
+                <!-- NOTIFICATION CONTAINER -->
                 <div id="notification-area" class="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full max-w-md px-4">
                     <!-- Las notificaciones se inyectarán aquí -->
                 </div>
@@ -347,7 +347,6 @@
                                 <option value="Redpack">Redpack</option>
                                 <option value="Carga Express">Carga Express</option>
                                 <option value="Seal Cargas">Seal Cargas</option>
-                               
                             </select>
                             <span
                                 class="material-symbols-outlined absolute left-3 top-3 text-slate-500 pointer-events-none">business</span>
@@ -355,7 +354,9 @@
                     </div>
                 </div>
                 
-                <!-- CAMPOS SEPARADOS DE NOMBRE Y APELLIDO -->
+                <!-- RUTA UNIFICADA: Input oculto ya que es única -->
+                <input type="hidden" name="routeType" value="integral">
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label
@@ -383,23 +384,15 @@
                             Origen</label>
                         <select id="select-start" name="startLocation"
                             class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none cursor-pointer transition appearance-none">
-                            <option value="jujuy">S.S. de Jujuy</option>
-                            <option value="yala">Yala</option>
-                            <option value="volcan">Volcán</option>
-                            <option value="purmamarca">Purmamarca</option>
-                            <option value="lipan">Cuesta de Lipán</option>
-                            <option value="salinas">Salinas Grandes</option>
-                            <option value="susques">Susques</option>
-                            <option value="jama">Paso de Jama</option>
+                            <!-- JS Dinámico -->
                         </select>
                     </div>
                     <div>
                         <label
                             class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Destino</label>
-                        <select name="direction"
+                        <select id="select-direction" name="direction"
                             class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none cursor-pointer transition appearance-none">
-                            <option value="asc">Hacia Frontera (Chile)</option>
-                            <option value="desc">Hacia Capital (Jujuy)</option>
+                           <!-- JS Dinámico -->
                         </select>
                     </div>
                 </div>
@@ -463,14 +456,7 @@
                     <div class="relative">
                         <select id="select-alert-loc" name="location"
                             class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-amber-500 outline-none cursor-pointer transition appearance-none pl-10">
-                            <option value="jujuy">S.S. de Jujuy</option>
-                            <option value="yala">Yala</option>
-                            <option value="volcan">Volcán</option>
-                            <option value="purmamarca">Purmamarca</option>
-                            <option value="lipan">Cuesta de Lipán</option>
-                            <option value="salinas">Salinas Grandes</option>
-                            <option value="susques">Susques</option>
-                            <option value="jama">Paso de Jama</option>
+                            <!-- JS -->
                         </select>
                         <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">place</span>
                     </div>
@@ -493,35 +479,49 @@
     </div>
 
     <script>
-        /* === CONFIGURACIÓN Y NODOS === */
+        /* === CONFIGURACIÓN Y SISTEMA DE RUTA INTEGRAL === */
         const CONFIG = {
-            center: { lat: -23.7, lng: -65.9 },
+            center: { lat: -23.9, lng: -65.2 }, 
             zoom: 9,
-            simSpeed: 0.08, // Velocidad REDUCIDA para movimiento más lento y realista
-            routeFallback: false, // Se activa si falla la API de Directions
-            alertRadius: 0.05 // Aprox 5-6 km en grados lat/lon para detección
+            simSpeed: 0.08, 
+            routeFallback: false,
+            alertRadius: 0.05 
         };
 
-        const NODES = [
-            { id: 'jujuy', name: 'S.S. de Jujuy', lat: -24.1858, lng: -65.2995 },
-            { id: 'yala', name: 'Yala', lat: -24.1189, lng: -65.4055 },
-            { id: 'volcan', name: 'Volcán', lat: -23.9167, lng: -65.4667 },
-            { id: 'purmamarca', name: 'Purmamarca', lat: -23.7483, lng: -65.4923 },
-            { id: 'lipan', name: 'Cuesta de Lipán', lat: -23.6882, lng: -65.6460 },
-            { id: 'salinas', name: 'Salinas Grandes', lat: -23.6196, lng: -65.8576 },
-            { id: 'susques', name: 'Susques', lat: -23.4038, lng: -66.3664 },
-            { id: 'jama', name: 'Paso de Jama', lat: -23.2375, lng: -67.0764 }
-        ];
+        // Definición de la RUTA ÚNICA INTEGRADA (OESTE -> ESTE)
+        const ROUTES = {
+            integral: {
+                id: 'integral',
+                name: 'Corredor Integral (Jama - Salta)',
+                color: '#6366f1', // Indigo
+                nodes: [
+                    { id: 'jama', name: 'Paso de Jama', lat: -23.2375, lng: -67.0764 },
+                    { id: 'susques', name: 'Susques', lat: -23.4038, lng: -66.3664 },
+                    { id: 'salinas', name: 'Salinas Grandes', lat: -23.6196, lng: -65.8576 },
+                    { id: 'lipan', name: 'Cuesta de Lipán', lat: -23.6882, lng: -65.6460 },
+                    { id: 'purmamarca', name: 'Purmamarca', lat: -23.7483, lng: -65.4923 },
+                    { id: 'volcan', name: 'Volcán', lat: -23.9167, lng: -65.4667 },
+                    { id: 'yala', name: 'Yala', lat: -24.1189, lng: -65.4055 },
+                    { id: 'jujuy', name: 'S.S. de Jujuy', lat: -24.1858, lng: -65.2995 },
+                    { id: 'perico', name: 'Acceso Sur (Perico)', lat: -24.3687, lng: -65.1037 }, 
+                    { id: 'san_pedro', name: 'San Pedro de Jujuy', lat: -24.2270, lng: -64.8687 },
+                    { id: 'libertador', name: 'Libertador Gral. San Martín', lat: -23.8138, lng: -64.7923 },
+                    { id: 'yuto', name: 'Yuto', lat: -23.6394, lng: -64.4727 },
+                    { id: 'limite_salta', name: 'Límite con Salta', lat: -23.5186, lng: -64.4048 }
+                ],
+                labels: { asc: 'Hacia Limite (Salta)', desc: 'Hacia Frontera (Chile)' }
+            }
+        };
 
         /* === ESTADO APLICACIÓN === */
         const state = {
             map: null,
             google: null,
             directionsService: null,
-            routePath: [], // Array de LatLngs reales de la carretera
+            routePaths: {}, 
             transports: [],
             alerts: [],
-            markers: {}, // ID -> Marker
+            markers: {},
             selectedId: null
         };
 
@@ -541,7 +541,9 @@
                     }
                 }, 1500);
 
-                app.renderDropdowns();
+                // Iniciar dropdowns con valor por defecto (única ruta)
+                app.handleRouteChange('integral');
+                app.populateAlertDropdown();
                 app.startClock();
             },
 
@@ -552,9 +554,7 @@
 
                 try {
                     await app.initMap();
-                    // Intentar cargar ruta real antes de empezar
-                    await app.calculateRealRoute();
-                    
+                    await app.calculateRoutes();
                     app.initData();
                     app.startSimulation();
 
@@ -590,121 +590,131 @@
                 });
 
                 // Marcadores de Ciudades
-                NODES.forEach(n => {
-                    const pin = new PinElement({ scale: 0.6, background: '#334155', borderColor: '#475569', glyph: '' });
-                    new AdvancedMarkerElement({
-                        map: state.map,
-                        position: { lat: n.lat, lng: n.lng },
-                        content: pin.element,
-                        title: n.name
+                Object.values(ROUTES).forEach(route => {
+                    route.nodes.forEach(n => {
+                        const pin = new PinElement({ scale: 0.6, background: '#334155', borderColor: '#475569', glyph: '' });
+                        new AdvancedMarkerElement({
+                            map: state.map,
+                            position: { lat: n.lat, lng: n.lng },
+                            content: pin.element,
+                            title: n.name
+                        });
                     });
                 });
             },
 
-            // 4. CÁLCULO DE RUTA REAL (NUEVO)
-            calculateRealRoute: () => {
-                return new Promise((resolve) => {
-                    const request = {
-                        origin: NODES[0], // Jujuy
-                        destination: NODES[NODES.length - 1], // Jama
-                        travelMode: 'DRIVING'
-                    };
+            // 4. CÁLCULO DE RUTAS
+            calculateRoutes: async () => {
+                const calcSingleRoute = (routeKey) => {
+                    return new Promise((resolve) => {
+                        const routeDef = ROUTES[routeKey];
+                        const nodes = routeDef.nodes;
+                        
+                        // Google Maps tiene un límite de waypoints. Dividiremos si es muy largo, 
+                        // pero para este demo asumimos que encaja o simplificamos.
+                        // Para garantizar que funcione en la demo, usamos start y end y waypoints intermedios.
+                        
+                        const request = {
+                            origin: nodes[0], // Jama
+                            destination: nodes[nodes.length - 1], // Salta limit
+                            waypoints: nodes.slice(1, -1).map(n => ({ location: { lat: n.lat, lng: n.lng }, stopover: false })),
+                            travelMode: 'DRIVING'
+                        };
 
-                    state.directionsService.route(request, (result, status) => {
-                        if (status === 'OK') {
-                            // Guardamos todos los puntos de la ruta
-                            state.routePath = result.routes[0].overview_path;
-                            
-                            // Dibujar la ruta real
-                            new state.google.Polyline({
-                                path: state.routePath,
-                                geodesic: true,
-                                strokeColor: "#6366f1",
-                                strokeOpacity: 0.8,
-                                strokeWeight: 4,
-                                map: state.map
-                            });
+                        state.directionsService.route(request, (result, status) => {
+                            if (status === 'OK') {
+                                const path = result.routes[0].overview_path;
+                                state.routePaths[routeKey] = path; 
 
-                            // Mapear cada nodo a su índice más cercano en la ruta real
-                            // Esto nos permite saber en qué "kilómetro" está cada ciudad
-                            NODES.forEach(node => {
-                                let minDst = Infinity;
-                                let closestIdx = 0;
-                                const nLat = node.lat;
-                                const nLng = node.lng;
-
-                                state.routePath.forEach((p, i) => {
-                                    // Distancia euclidiana simple (suficiente para este zoom)
-                                    const d = Math.sqrt(Math.pow(p.lat() - nLat, 2) + Math.pow(p.lng() - nLng, 2));
-                                    if (d < minDst) {
-                                        minDst = d;
-                                        closestIdx = i;
-                                    }
+                                new state.google.Polyline({
+                                    path: path,
+                                    geodesic: true,
+                                    strokeColor: routeDef.color,
+                                    strokeOpacity: 0.7,
+                                    strokeWeight: 4,
+                                    map: state.map
                                 });
-                                node.pathIndex = closestIdx;
-                            });
 
-                            console.log("Ruta real cargada:", state.routePath.length, "puntos");
-                        } else {
-                            console.warn("Fallo Directions API, usando modo fallback lineal");
-                            CONFIG.routeFallback = true;
-                            // Dibujar línea recta como fallback
-                             new state.google.Polyline({
-                                path: NODES.map(n => ({ lat: n.lat, lng: n.lng })),
-                                strokeColor: "#6366f1",
-                                strokeOpacity: 0.5,
-                                strokeWeight: 4,
-                                map: state.map
-                            });
-                        }
-                        resolve();
+                                // Mapear índices 
+                                nodes.forEach(node => {
+                                    let minDst = Infinity;
+                                    let closestIdx = 0;
+                                    path.forEach((p, i) => {
+                                        const d = Math.sqrt(Math.pow(p.lat() - node.lat, 2) + Math.pow(p.lng() - node.lng, 2));
+                                        if (d < minDst) { minDst = d; closestIdx = i; }
+                                    });
+                                    node.pathIndex = closestIdx;
+                                });
+                                console.log(`Ruta ${routeKey} cargada OK`);
+                            } else {
+                                console.warn(`Fallo ruta ${routeKey}, fallback lineal`);
+                                state.routePaths[routeKey] = nodes.map(n => new google.maps.LatLng(n.lat, n.lng));
+                            }
+                            resolve();
+                        });
                     });
-                });
+                };
+
+                await calcSingleRoute('integral');
             },
 
             // 5. DATA INICIAL
             initData: () => {
-                app.createTransport({ plate: "AD 440 JK", company: "TransNOA", driver: "Carlos M.", startLocation: "purmamarca", direction: "asc" });
-                app.createTransport({ plate: "AE 112 BB", company: "Logística Jujuy", driver: "Roberto S.", startLocation: "susques", direction: "desc" });
-                app.createTransport({ plate: "AF 990 ZZ", company: "Redpack", driver: "Juan P.", startLocation: "jujuy", direction: "asc" });
+                // Ejemplo: Viaje completo desde frontera
+                app.createTransport({ 
+                    plate: "AD 440 JK", company: "TransNOA", driver: "Carlos M.", 
+                    routeType: 'integral', startLocation: "jama", direction: "asc" // Hacia Salta (Este)
+                });
+                
+                // Ejemplo: Viaje desde el ramal hacia chile
+                app.createTransport({ 
+                    plate: "AE 112 BB", company: "Logística Jujuy", driver: "Roberto S.", 
+                    routeType: 'integral', startLocation: "libertador", direction: "desc" // Hacia Chile (Oeste)
+                }); 
+                
+                // Ejemplo: En capital
+                app.createTransport({ 
+                    plate: "AF 990 ZZ", company: "Redpack", driver: "Juan P.", 
+                    routeType: 'integral', startLocation: "jujuy", direction: "asc" // Hacia Salta
+                });
 
-                const alert = { id: 1, type: 'caution', title: 'Viento Blanco', desc: 'Visibilidad reducida en zona de frontera.', location: 'jama' };
-                state.alerts.push(alert);
+                const alert1 = { id: 1, type: 'caution', title: 'Viento Blanco', desc: 'Precaución en Paso de Jama.', location: 'jama', routeType: 'integral' };
+                //const alert2 = { id: 2, type: 'police', title: 'Control Rutina', desc: 'Gendarmería en acceso a Yuto.', location: 'yuto', routeType: 'integral' };
+                
+                //state.alerts.push(alert1, alert2);
+                state.alerts.push(alert1);
                 app.renderAlertList();
-                app.createAlertMarker(alert);
+                app.createAlertMarker(alert1);
+                //app.createAlertMarker(alert2);
                 app.renderFleetList();
             },
 
-            // 6. LOGICA TRANSPORTE (ACTUALIZADA)
+            // 6. LOGICA TRANSPORTE
             createTransport: (data) => {
-                const startNode = NODES.find(n => n.id === data.startLocation);
+                const routeDef = ROUTES[data.routeType];
+                if (!routeDef) return;
+
+                const startNode = routeDef.nodes.find(n => n.id === data.startLocation);
                 if (!startNode) return;
 
-                let currentPathIdx = 0;
-                let endPathIdx = 0;
+                const path = state.routePaths[data.routeType];
+                if (!path || path.length === 0) return;
 
-                if (!CONFIG.routeFallback) {
-                    // MODO RUTA REAL
-                    currentPathIdx = startNode.pathIndex;
-                    // Si va ascendente (a Chile), el fin es el último punto del array
-                    // Si va descendente (a Jujuy), el fin es el índice 0
-                    endPathIdx = data.direction === 'asc' ? state.routePath.length - 1 : 0;
-                } else {
-                    // MODO FALLBACK (Lógica anterior basada en índices de NODES)
-                    currentPathIdx = NODES.findIndex(n => n.id === data.startLocation);
-                    endPathIdx = data.direction === 'asc' ? NODES.length - 1 : 0;
-                }
+                let currentPathIdx = startNode.pathIndex !== undefined ? startNode.pathIndex : 0;
+                let endPathIdx = data.direction === 'asc' ? path.length - 1 : 0;
+
+                if(currentPathIdx >= path.length) currentPathIdx = 0;
 
                 const t = {
                     id: Date.now() + Math.random(),
                     ...data,
                     currentPathIdx: currentPathIdx,
                     targetPathIdx: endPathIdx,
-                    speed: (CONFIG.simSpeed + (Math.random() * 0.05)) * (data.direction === 'asc' ? 1 : -1), // Velocidad positiva o negativa
+                    speed: (CONFIG.simSpeed + (Math.random() * 0.05)) * (data.direction === 'asc' ? 1 : -1),
                     lat: startNode.lat,
                     lng: startNode.lng,
                     lastNodeName: startNode.name,
-                    notifiedAlerts: new Set() // Para no repetir notificaciones
+                    notifiedAlerts: new Set()
                 };
 
                 state.transports.push(t);
@@ -734,58 +744,57 @@
                 state.markers[t.id] = marker;
             },
 
-            // 7. SIMULACIÓN (ACTUALIZADA con PROXIMIDAD)
+            // 7. SIMULACIÓN
             startSimulation: () => {
                 setInterval(() => {
                     state.transports.forEach(t => {
-                        
-                        // Lógica de movimiento (existente)
-                        if (!CONFIG.routeFallback) {
-                            if ((t.direction === 'asc' && t.currentPathIdx >= t.targetPathIdx) ||
-                                (t.direction === 'desc' && t.currentPathIdx <= t.targetPathIdx)) {
-                                return; 
-                            }
-                            t.currentPathIdx += t.speed;
-                            const pIdx = Math.floor(t.currentPathIdx);
-                            if (pIdx >= 0 && pIdx < state.routePath.length) {
-                                const point = state.routePath[pIdx];
-                                t.lat = point.lat();
-                                t.lng = point.lng();
-                                NODES.forEach(n => {
-                                    if (Math.abs(n.pathIndex - pIdx) < 20) t.lastNodeName = n.name; 
-                                });
-                            }
+                        const path = state.routePaths[t.routeType];
+                        if (!path) return;
+
+                        if ((t.direction === 'asc' && t.currentPathIdx >= t.targetPathIdx) ||
+                            (t.direction === 'desc' && t.currentPathIdx <= t.targetPathIdx)) {
+                            return; 
                         }
 
-                        // === NUEVO: CHECK PROXIMIDAD DE ALERTAS ===
+                        t.currentPathIdx += t.speed;
+                        const pIdx = Math.floor(t.currentPathIdx);
+
+                        if (pIdx >= 0 && pIdx < path.length) {
+                            const point = path[pIdx];
+                            t.lat = typeof point.lat === 'function' ? point.lat() : point.lat;
+                            t.lng = typeof point.lng === 'function' ? point.lng() : point.lng;
+
+                            const routeDef = ROUTES[t.routeType];
+                            routeDef.nodes.forEach(n => {
+                                if (n.pathIndex && Math.abs(n.pathIndex - pIdx) < 20) t.lastNodeName = n.name; 
+                            });
+                        }
+
                         app.checkProximity(t);
 
-                        // Actualizar Marker en Mapa
                         if (state.markers[t.id]) {
                             state.markers[t.id].position = { lat: t.lat, lng: t.lng };
                         }
 
-                        // Actualizar UI si está seleccionado
                         if (state.selectedId === t.id) app.updateCard(t);
                     });
                 }, 50); 
             },
 
-            // === NUEVAS FUNCIONES DE NOTIFICACIÓN ===
-            
             checkProximity: (t) => {
                 state.alerts.forEach(alert => {
-                    // Verificar si ya fue notificado de esta alerta específica
                     if(t.notifiedAlerts.has(alert.id)) return;
+                    
+                    // Encontrar el nodo alerta
+                    const route = ROUTES.integral;
+                    const target = route.nodes.find(n => n.id === alert.location);
 
-                    const alertNode = NODES.find(n => n.id === alert.location);
-                    if(!alertNode) return;
+                    if(!target) return;
 
-                    // Distancia simple (pitágoras) porque las coord son cercanas
-                    const dist = Math.sqrt(Math.pow(t.lat - alertNode.lat, 2) + Math.pow(t.lng - alertNode.lng, 2));
+                    const dist = Math.sqrt(Math.pow(t.lat - target.lat, 2) + Math.pow(t.lng - target.lng, 2));
 
                     if(dist < CONFIG.alertRadius) {
-                        t.notifiedAlerts.add(alert.id); // Marcar como notificado
+                        t.notifiedAlerts.add(alert.id);
                         app.showNotification(t, alert);
                     }
                 });
@@ -793,7 +802,6 @@
 
             showNotification: (t, alert) => {
                 const container = document.getElementById('notification-area');
-                const id = 'toast-' + Date.now();
                 
                 const colorClass = alert.type === 'accident' ? 'bg-red-500' : (alert.type === 'police' ? 'bg-blue-500' : 'bg-amber-500');
                 const icon = alert.type === 'accident' ? 'car_crash' : (alert.type === 'police' ? 'local_police' : 'warning');
@@ -817,20 +825,15 @@
 
                 container.appendChild(toast);
 
-                // Animación de entrada
                 requestAnimationFrame(() => {
                     toast.classList.remove('toast-enter');
                     toast.classList.add('toast-enter-active');
                 });
 
-                // Sonido simple (opcional, solo beep de consola visual)
-                console.log("BEEP: Alerta de proximidad para " + t.plate);
-
-                // Remover después de 5 segundos
                 setTimeout(() => {
                     toast.classList.remove('toast-enter-active');
                     toast.classList.add('toast-exit-active');
-                    setTimeout(() => toast.remove(), 500); // Esperar animación
+                    setTimeout(() => toast.remove(), 500);
                 }, 5000);
             },
 
@@ -846,20 +849,21 @@
             },
 
             updateCard: (t) => {
+                const routeDef = ROUTES[t.routeType];
                 document.getElementById('card-plate').innerText = t.plate;
                 document.getElementById('card-driver').innerText = t.driver;
-                document.getElementById('card-speed').innerText = Math.abs(Math.floor(t.speed * 120)) + " km/h"; // Simulando velocidad visual
+                document.getElementById('card-speed').innerText = Math.abs(Math.floor(t.speed * 120)) + " km/h";
                 document.getElementById('card-from').innerText = t.lastNodeName || "EN RUTA"; 
                 
-                // Calcular destino nombre
-                const destName = t.direction === 'asc' ? 'CHILE (Frontera)' : 'JUJUY (Capital)';
+                const labels = routeDef.labels;
+                const destName = t.direction === 'asc' ? labels.asc : labels.desc;
                 document.getElementById('card-to').innerText = destName;
 
-                // Barra de progreso aproximada
                 let pct = 0;
-                if(!CONFIG.routeFallback) {
-                    pct = (t.currentPathIdx / state.routePath.length) * 100;
-                    if(t.direction === 'desc') pct = 100 - pct; // Invertir barra si baja
+                const path = state.routePaths[t.routeType];
+                if(path) {
+                    pct = (t.currentPathIdx / path.length) * 100;
+                    if(t.direction === 'desc') pct = 100 - pct;
                 }
                 document.getElementById('card-progress').style.width = Math.min(Math.max(pct, 0), 100) + "%";
             },
@@ -869,12 +873,39 @@
                 document.getElementById('track-card').classList.add('translate-y-[150%]');
             },
 
+            // MANEJO DE CAMBIO DE RUTA EN MODAL
+            handleRouteChange: (routeKey) => {
+                const routeDef = ROUTES[routeKey];
+                const startSelect = document.getElementById('select-start');
+                const dirSelect = document.getElementById('select-direction');
+
+                // Llenar Origen
+                startSelect.innerHTML = routeDef.nodes.map(n => `<option value="${n.id}">${n.name}</option>`).join('');
+                
+                // Llenar Direcciones
+                dirSelect.innerHTML = `
+                    <option value="asc">${routeDef.labels.asc}</option>
+                    <option value="desc">${routeDef.labels.desc}</option>
+                `;
+            },
+
+            // Llenar dropdown de alertas con TODOS los nodos de TODAS las rutas
+            populateAlertDropdown: () => {
+                const select = document.getElementById('select-alert-loc');
+                const route = ROUTES.integral;
+                
+                let html = `<optgroup label="${route.name}">` + 
+                        route.nodes.map(n => `<option value="${n.id}">${n.name}</option>`).join('') + 
+                        `</optgroup>`;
+                
+                select.innerHTML = html;
+            },
+
             submitTransport: (e) => {
                 e.preventDefault();
-                // Modificado para unir nombre y apellido
                 const formData = new FormData(e.target);
                 const data = Object.fromEntries(formData);
-                data.driver = `${data.driverName} ${data.driverSurname}`; // Unir campos
+                data.driver = `${data.driverName} ${data.driverSurname}`;
                 
                 app.createTransport(data);
                 app.renderFleetList();
@@ -887,7 +918,10 @@
                 e.preventDefault();
                 const data = Object.fromEntries(new FormData(e.target));
                 const titles = { caution: 'Precaución', accident: 'Accidente', police: 'Control' };
-                const alert = { id: Date.now(), ...data, title: titles[data.type] };
+                // Al ser una sola ruta, el tipo es siempre integral
+                const rType = 'integral';
+
+                const alert = { id: Date.now(), ...data, title: titles[data.type], routeType: rType };
                 state.alerts.unshift(alert);
                 app.createAlertMarker(alert);
                 app.renderAlertList();
@@ -902,7 +936,9 @@
                 const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'police' ? 'local_police' : 'warning');
                 el.innerHTML = `<span class="material-symbols-outlined ${color} text-3xl drop-shadow-md animate-bounce">${icon}</span>`;
 
-                const loc = NODES.find(n => n.id === a.location);
+                // Buscar nodo en la ruta integral
+                let loc = ROUTES.integral.nodes.find(n => n.id === a.location);
+
                 if (loc) {
                     new state.google.AdvancedMarkerElement({
                         map: state.map,
@@ -916,7 +952,8 @@
             renderFleetList: () => {
                 const list = document.getElementById('panel-fleet');
                 document.getElementById('count-fleet').innerText = state.transports.length;
-                list.innerHTML = state.transports.map(t => `
+                list.innerHTML = state.transports.map(t => {
+                    return `
                     <div onclick="app.selectTransport(${t.id})" class="bg-slate-800 p-3 rounded-lg border border-slate-700 hover:border-indigo-500 cursor-pointer transition flex justify-between items-center group mb-2">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded bg-slate-900 flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-600 font-mono shadow-inner">${t.plate.substring(0, 2)}</div>
@@ -925,17 +962,21 @@
                                 <div class="text-[10px] text-slate-500 uppercase">${t.company}</div>
                             </div>
                         </div>
-                        <div class="text-[10px] text-green-400 bg-green-900/20 px-2 py-0.5 rounded border border-green-900/50 font-bold flex items-center gap-1">
-                            <div class="live-dot w-1.5 h-1.5 bg-green-500"></div> RUTA 9/52
+                        <div class="text-[10px] text-indigo-400 bg-indigo-900/20 px-2 py-0.5 rounded border border-indigo-900/50 font-bold flex items-center gap-1">
+                            <div class="live-dot w-1.5 h-1.5 bg-indigo-500"></div> EN RUTA
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
             },
 
             renderAlertList: () => {
                 const list = document.getElementById('alert-list-content');
                 list.innerHTML = state.alerts.map(a => {
-                    const loc = NODES.find(n => n.id === a.location)?.name || 'Ruta';
+                    // Buscar nombre nodo
+                    let locName = 'Ruta';
+                    const found = ROUTES.integral.nodes.find(n => n.id === a.location);
+                    if(found) locName = found.name;
+
                     const color = a.type === 'accident' ? 'red' : (a.type === 'police' ? 'blue' : 'amber');
                     const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'police' ? 'local_police' : 'warning');
                     return `
@@ -948,16 +989,10 @@
                         </div>
                         <p class="text-xs text-slate-300 leading-relaxed mb-2 group-hover:text-white">${a.desc}</p>
                         <div class="text-[10px] text-slate-400 uppercase font-bold bg-slate-900/50 p-1 px-2 rounded w-fit flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[10px]">location_on</span> ${loc}
+                            <span class="material-symbols-outlined text-[10px]">location_on</span> ${locName}
                         </div>
                     </div>`;
                 }).join('');
-            },
-
-            renderDropdowns: () => {
-                const opts = NODES.map(n => `<option value="${n.id}">${n.name}</option>`).join('');
-                document.getElementById('select-start').innerHTML = opts;
-                document.getElementById('select-alert-loc').innerHTML = opts;
             },
 
             startClock: () => setInterval(() => {
