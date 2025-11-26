@@ -423,15 +423,18 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Tipo de
                         Incidente</label>
-                    <div class="grid grid-cols-3 gap-2">
+                    <!-- SE CAMBIÓ A GRID-COLS-4 PARA 4 OPCIONES -->
+                    <div class="grid grid-cols-4 gap-2">
+                        <!-- 1. CLIMA (Value modificado a 'weather') -->
                         <label class="cursor-pointer">
-                            <input type="radio" name="type" value="caution" checked="" class="peer hidden">
+                            <input type="radio" name="type" value="weather" checked="" class="peer hidden">
                             <div
-                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-amber-600/20 peer-checked:border-amber-500 peer-checked:text-amber-400 transition">
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-cyan-600/20 peer-checked:border-cyan-500 peer-checked:text-stone-400 transition">
                                 <span class="material-symbols-outlined block text-2xl mb-1">wb_sunny</span>
                                 <span class="text-[10px] font-bold">CLIMA</span>
                             </div>
                         </label>
+                        <!-- 2. CHOQUE -->
                         <label class="cursor-pointer">
                             <input type="radio" name="type" value="accident" class="peer hidden">
                             <div
@@ -440,12 +443,22 @@
                                 <span class="text-[10px] font-bold">CHOQUE</span>
                             </div>
                         </label>
+                        <!-- 3. CONTROL -->
                         <label class="cursor-pointer">
                             <input type="radio" name="type" value="police" class="peer hidden">
                             <div
                                 class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-blue-400 transition">
                                 <span class="material-symbols-outlined block text-2xl mb-1">local_police</span>
                                 <span class="text-[10px] font-bold">CONTROL</span>
+                            </div>
+                        </label>
+                        <!-- 4. NUEVO: PRECAUCIÓN -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="caution" class="peer hidden">
+                            <div
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-amber-600/20 peer-checked:border-amber-500 peer-checked:text-amber-400 transition">
+                                <span class="material-symbols-outlined block text-2xl mb-1">warning</span>
+                                <span class="text-[10px] font-bold">PRECAUCIÓN</span>
                             </div>
                         </label>
                     </div>
@@ -611,7 +624,6 @@
                         const nodes = routeDef.nodes;
                         
                         // Google Maps tiene un límite de waypoints. Dividiremos si es muy largo, 
-                        // pero para este demo asumimos que encaja o simplificamos.
                         // Para garantizar que funcione en la demo, usamos start y end y waypoints intermedios.
                         
                         const request = {
@@ -678,7 +690,8 @@
                     routeType: 'integral', startLocation: "jujuy", direction: "asc" // Hacia Salta
                 });
 
-                const alert1 = { id: 1, type: 'caution', title: 'Viento Blanco', desc: 'Precaución en Paso de Jama.', location: 'jama', routeType: 'integral' };
+                // Cambiado tipo a 'weather' para ser consistente con la nueva lógica
+                const alert1 = { id: 1, type: 'weather', title: 'Clima ', desc: 'Vientos Blancos.', location: 'jama', routeType: 'integral' };
                 //const alert2 = { id: 2, type: 'police', title: 'Control Rutina', desc: 'Gendarmería en acceso a Yuto.', location: 'yuto', routeType: 'integral' };
                 
                 //state.alerts.push(alert1, alert2);
@@ -800,17 +813,29 @@
                 });
             },
 
+            // Para cambiar el color de las alertas
+            getAlertProps: (type) => {
+                const props = {
+                    accident: { color: 'red', icon: 'car_crash', title: 'Accidente' },
+                    police: { color: 'blue', icon: 'local_police', title: 'Control' },
+                    weather: { color: 'stone', icon: 'wb_sunny', title: 'Clima' },
+                    caution: { color: 'amber', icon: 'warning', title: 'Precaución' }
+                };
+                return props[type] || props.caution;
+            },
+
             showNotification: (t, alert) => {
                 const container = document.getElementById('notification-area');
                 
-                const colorClass = alert.type === 'accident' ? 'bg-red-500' : (alert.type === 'police' ? 'bg-blue-500' : 'bg-amber-500');
-                const icon = alert.type === 'accident' ? 'car_crash' : (alert.type === 'police' ? 'local_police' : 'warning');
+                // Usar helper para estilos
+                const p = app.getAlertProps(alert.type);
+                const colorClass = `bg-${p.color}-500`;
 
                 const toast = document.createElement('div');
-                toast.className = `w-full bg-slate-900 border-l-4 ${colorClass.replace('bg-', 'border-')} shadow-2xl rounded-r-lg p-4 flex items-center gap-4 toast-enter pointer-events-auto`;
+                toast.className = `w-full bg-slate-900 border-l-4 border-${p.color}-500 shadow-2xl rounded-r-lg p-4 flex items-center gap-4 toast-enter pointer-events-auto`;
                 toast.innerHTML = `
-                    <div class="rounded-full p-2 bg-slate-800 ${colorClass.replace('bg-', 'text-')}">
-                        <span class="material-symbols-outlined animate-pulse">${icon}</span>
+                    <div class="rounded-full p-2 bg-slate-800 text-${p.color}-500">
+                        <span class="material-symbols-outlined animate-pulse">${p.icon}</span>
                     </div>
                     <div class="flex-1">
                         <div class="text-[15px] text-slate-400 font-bold uppercase tracking-widest flex justify-between">
@@ -819,6 +844,9 @@
                         </div>
                         <div class="font-bold text-white text-sm leading-tight mt-1">
                             ${alert.title} en zona próxima
+                        </div>
+                        <div class="text-[8] text-white-400 mt-1">
+                            "${alert.desc}"
                         </div>
                     </div>
                 `;
@@ -917,11 +945,12 @@
             submitAlert: (e) => {
                 e.preventDefault();
                 const data = Object.fromEntries(new FormData(e.target));
-                const titles = { caution: 'Precaución', accident: 'Accidente', police: 'Control' };
+                // Usamos el helper para obtener el título correcto
+                const props = app.getAlertProps(data.type);
                 // Al ser una sola ruta, el tipo es siempre integral
                 const rType = 'integral';
 
-                const alert = { id: Date.now(), ...data, title: titles[data.type], routeType: rType };
+                const alert = { id: Date.now(), ...data, title: props.title, routeType: rType };
                 state.alerts.unshift(alert);
                 app.createAlertMarker(alert);
                 app.renderAlertList();
@@ -932,9 +961,9 @@
 
             createAlertMarker: (a) => {
                 const el = document.createElement('div');
-                const color = a.type === 'accident' ? 'text-red-500' : (a.type === 'police' ? 'text-blue-500' : 'text-amber-500');
-                const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'police' ? 'local_police' : 'warning');
-                el.innerHTML = `<span class="material-symbols-outlined ${color} text-3xl drop-shadow-md animate-bounce">${icon}</span>`;
+                const p = app.getAlertProps(a.type);
+                
+                el.innerHTML = `<span class="material-symbols-outlined text-${p.color}-500 text-3xl drop-shadow-md animate-bounce">${p.icon}</span>`;
 
                 // Buscar nodo en la ruta integral
                 let loc = ROUTES.integral.nodes.find(n => n.id === a.location);
@@ -977,13 +1006,13 @@
                     const found = ROUTES.integral.nodes.find(n => n.id === a.location);
                     if(found) locName = found.name;
 
-                    const color = a.type === 'accident' ? 'red' : (a.type === 'police' ? 'blue' : 'amber');
-                    const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'police' ? 'local_police' : 'warning');
+                    const p = app.getAlertProps(a.type);
+                    
                     return `
-                    <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-${color}-500 mb-2 cursor-pointer hover:bg-slate-750 transition shadow-sm group">
+                    <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-${p.color}-500 mb-2 cursor-pointer hover:bg-slate-750 transition shadow-sm group">
                         <div class="flex justify-between items-start mb-1">
-                            <h4 class="text-${color}-500 text-sm font-bold flex items-center gap-1">
-                                <span class="material-symbols-outlined text-sm">${icon}</span> ${a.title}
+                            <h4 class="text-${p.color}-500 text-sm font-bold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">${p.icon}</span> ${a.title}
                             </h4>
                             <span class="text-[10px] text-slate-500 uppercase">AHORA</span>
                         </div>
