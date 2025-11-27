@@ -176,18 +176,96 @@
                 <div class="flex justify-between text-indigo-400"><span>&gt; MAP_RENDERER</span><span id="status-api"
                         class="text-green-500 font-bold animate-none">READY</span></div>
             </div>
-
-            <button id="btn-enter" onclick="app.enterSystem()"
+            <!--Acceso como invitado-->
+            <button id="btn-enter" onclick="app.enterAsGuest()"
                 class="group relative bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-xl font-bold tracking-wider shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait overflow-hidden cursor-pointer animate-pulse">
                 <div
                     class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12">
                 </div>
-                <span class="relative flex items-center gap-3">INGRESAR AL SISTEMA <span
+                <span class="relative flex items-center gap-3">INGRESAR AL SISTEMA COMO INVITADO<span
+                        class="material-symbols-outlined">arrow_forward</span></span>
+            </button>
+            <br><br>
+
+            <!--Acceso como empresa con login-->
+            <button id="btn-enter" onclick="app.showCompanyLogin()"
+                class="group relative bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-xl font-bold tracking-wider shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait overflow-hidden cursor-pointer animate-pulse">
+                <div
+                    class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12">
+                </div>
+                <span class="relative flex items-center gap-3">INGRESAR AL SISTEMA COMO EMPRESA<span
                         class="material-symbols-outlined">arrow_forward</span></span>
             </button>
         </div>
     </div>
+    <!-- PANTALLA DE LOGIN DE EMPRESA -->
+     <!-- 2. PANTALLA DE LOGIN EMPRESA -->
+<div id="login-screen" class="fixed inset-0 z-[100] bg-slate-900 hidden flex-col items-center justify-center transition-opacity duration-700">
+    <div class="scan-line"></div>
+    <!-- Grid Background -->
+    <div class="absolute inset-0 opacity-10"
+        style="background-image: radial-gradient(#6366f1 1px, transparent 1px); background-size: 30px 30px;"></div>
 
+    <div class="relative z-10 w-full max-w-md px-4">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-2xl mb-4">
+                <span class="material-symbols-outlined text-5xl text-emerald-500">business</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black font-tech tracking-widest text-white mb-2">
+                ACCESO <span class="text-emerald-500">EMPRESA</span>
+            </h2>
+            <p class="text-slate-400 text-sm uppercase tracking-wider">Autenticación requerida</p>
+        </div>
+
+        <!-- Formulario de Login -->
+        <form id="login-form" onsubmit="app.loginCompany(event)" 
+            class="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-2xl p-8 shadow-2xl">
+            
+            <!-- Campo Usuario -->
+            <div class="mb-6">
+                <label class="block text-slate-300 text-sm font-bold mb-2 uppercase tracking-wide" for="username">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">person</span>
+                    Usuario
+                </label>
+                <input type="text" id="username" required
+                    class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 transition"
+                    placeholder="Ingrese su usuario">
+            </div>
+
+            <!-- Campo Contraseña -->
+            <div class="mb-6">
+                <label class="block text-slate-300 text-sm font-bold mb-2 uppercase tracking-wide" for="password">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">lock</span>
+                    Contraseña
+                </label>
+                <input type="password" id="password" required
+                    class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 transition"
+                    placeholder="Ingrese su contraseña">
+            </div>
+
+            <!-- Mensaje de Error -->
+            <div id="login-error" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-300 text-sm">
+                <span class="material-symbols-outlined text-base align-middle mr-1">error</span>
+                <span id="login-error-text">Usuario o contraseña incorrectos</span>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex gap-3">
+                <button type="button" onclick="app.backToSplash()"
+                    class="flex-1 bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold transition">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">arrow_back</span>
+                    VOLVER
+                </button>
+                <button type="submit"
+                    class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-lg font-bold shadow-[0_0_20px_rgba(16,185,129,0.4)] transition transform hover:scale-105">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">login</span>
+                    INGRESAR
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
     <!-- 2. APLICACIÓN PRINCIPAL -->
     <div id="app-container" class="h-full flex flex-col opacity-0 transition-opacity duration-1000">
 
@@ -213,11 +291,21 @@
                     <div class="text-[10px] text-slate-500 uppercase">Hora Local</div>
                     <div class="font-mono text-slate-200 font-bold" id="clock">07:13:35</div>
                 </div>
-                <button onclick="app.openModal('transport')"
-                    class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition hover:-translate-y-0.5">
-                    <span class="material-symbols-outlined text-sm">add_circle</span>
-                    <span class="hidden sm:inline">CARGAR UNIDAD</span>
+                
+                <!-- Botón: Cargar transportista -->
+                <button onclick="app.openModal('driver')"
+                    class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition hover:-translate-y-0.5 company-only">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    <span class="hidden sm:inline">CARGAR TRANSPORTISTA</span>
                 </button>
+
+                <!-- Botón: Cargar transporte -->
+                <button onclick="app.openModal('vehicle')"
+                    class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition hover:-translate-y-0.5 company-only">
+                    <span class="material-symbols-outlined text-sm">local_shipping</span>
+                    <span class="hidden sm:inline">CARGAR TRANSPORTE</span>
+                </button>
+
                 <button onclick="app.toggleSidebar()" class="md:hidden text-slate-400 hover:text-white"><span
                         class="material-symbols-outlined">menu</span></button>
             </div>
@@ -236,6 +324,11 @@
                         <span class="material-symbols-outlined text-sm">local_shipping</span> Flota (<span
                             id="count-fleet">0</span>)
                     </button>
+                    <button id="tab-drivers" onclick="app.switchTab('drivers')"
+                    class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    Choferes
+                    </button>
                     <button id="tab-alerts" onclick="app.switchTab('alerts')"
                         class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined text-sm">warning</span> Alertas
@@ -245,6 +338,10 @@
                 <!-- Panel: Flota -->
                 <div id="panel-fleet" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
                     <!-- Lista generada por JS -->
+                </div>
+                <!-- Panel: Choferes -->
+                <div id="panel-drivers" class="hidden flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    <!-- Lista de choferes generada por JS -->
                 </div>
 
                 <!-- Panel: Alertas -->
@@ -313,106 +410,250 @@
         </main>
     </div>
 
-    <!-- MODAL: CARGAR TRANSPORTE -->
-    <div id="modal-transport"
-        class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div id="modal-transport-content"
+    <!-- MODAL: CARGAR TRANSPORTISTA -->
+        <div id="modal-driver"
+            class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-driver-content"
             class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
             <div class="bg-indigo-600 p-5 flex justify-between items-center shadow-lg">
-                <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
-                    <span class="material-symbols-outlined">local_shipping</span> REGISTRAR UNIDAD
-                </h3>
-                <button onclick="app.closeModal('transport')" class="text-indigo-200 hover:text-white transition"><span
-                        class="material-symbols-outlined">close</span></button>
+            <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                <span class="material-symbols-outlined">badge</span> CARGAR TRANSPORTISTA
+            </h3>
+            <button onclick="app.closeModal('driver')" class="text-indigo-200 hover:text-white transition">
+                <span class="material-symbols-outlined">close</span>
+            </button>
             </div>
-            <form onsubmit="app.submitTransport(event)" class="p-6 space-y-5">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Patente</label>
-                        <div class="relative">
-                            <input type="text" name="plate" required="" placeholder="AA 123 BB"
-                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none font-mono uppercase tracking-widest pl-10 transition">
 
-                            <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">tag</span>
-                        </div>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Empresa</label>
-                        <div class="relative">
-                            <select name="company" required=""
-                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition">
-                                <option value="" disabled selected>Selecciona...</option>
-                                <option value="Redpack">Redpack</option>
-                                <option value="Carga Express">Carga Express</option>
-                                <option value="Seal Cargas">Seal Cargas</option>
-                               
-                            </select>
-                            <span
-                                class="material-symbols-outlined absolute left-3 top-3 text-slate-500 pointer-events-none">business</span>
-                        </div>
-                    </div>
+            <form onsubmit="app.submitDriver(event)" class="p-6 space-y-5">
+            <div class="space-y-4">
+                <!-- Nombre -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Nombre y apellido</label>
+                <div class="relative">
+                    <input type="text" name="driverName" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Juan Pérez">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">person</span>
                 </div>
-                
-                <!-- CAMPOS SEPARADOS DE NOMBRE Y APELLIDO -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Nombre</label>
-                        <div class="relative">
-                            <input type="text" name="driverName" required="" placeholder="Juan"
-                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition">
-                            <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">person</span>
-                        </div>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Apellido</label>
-                        <div class="relative">
-                            <input type="text" name="driverSurname" required="" placeholder="Pérez"
-                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition">
-                            <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">badge</span>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Punto
-                            Origen</label>
-                        <select id="select-start" name="startLocation"
-                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none cursor-pointer transition appearance-none">
-                            <option value="jujuy">S.S. de Jujuy</option>
-                            <option value="yala">Yala</option>
-                            <option value="volcan">Volcán</option>
-                            <option value="purmamarca">Purmamarca</option>
-                            <option value="lipan">Cuesta de Lipán</option>
-                            <option value="salinas">Salinas Grandes</option>
-                            <option value="susques">Susques</option>
-                            <option value="jama">Paso de Jama</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Destino</label>
-                        <select name="direction"
-                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none cursor-pointer transition appearance-none">
-                            <option value="asc">Hacia Frontera (Chile)</option>
-                            <option value="desc">Hacia Capital (Jujuy)</option>
-                        </select>
-                    </div>
+                <!-- DNI -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">DNI</label>
+                <div class="relative">
+                    <input type="text" name="dni" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="12345678">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">credit_card</span>
                 </div>
-                <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
-                    <button type="button" onclick="app.closeModal('transport')"
+                </div>
+                <!-- Licencia de conducir -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Licencia de conducir</label>
+                <div class="relative">
+                    <input type="text" name="license" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Clase, número, etc.">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">drive_eta</span>
+                </div>
+                </div>
+
+                <!-- Carnet de cargas peligrosas -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Carnet de cargas peligrosas</label>
+                <div class="relative">
+                    <input type="text" name="dangerCard"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Número / categoría (si corresponde)">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">warning</span>
+                </div>
+                </div>
+
+                <!-- Póliza de seguro / ART -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Póliza de seguro / ART</label>
+                <div class="relative">
+                    <input type="text" name="insurance"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Número de póliza / ART">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">policy</span>
+                </div>
+                </div>
+
+                <!-- Empresa (se completa desde login) -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Empresa</label>
+                <div class="relative">
+                    <input type="text" id="driver-company" name="company" required readonly
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white outline-none pl-10 transition"
+                        value="Empresa logueada">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">business</span>
+                </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                <button type="button" onclick="app.closeModal('driver')"
                         class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
-                    <button type="submit"
-                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg hover:shadow-indigo-500/30 transition transform active:scale-95">INICIAR
-                        RECORRIDO</button>
-                </div>
+                <button type="submit"
+                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg hover:shadow-indigo-500/30 transition transform active:scale-95">
+                GUARDAR TRANSPORTISTA
+                </button>
+            </div>
             </form>
         </div>
-    </div>
+        </div>
+
+        <!-- MODAL: CARGAR TRANSPORTE -->
+        <div id="modal-vehicle"
+            class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-vehicle-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-emerald-600 p-5 flex justify-between items-center shadow-lg">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                <span class="material-symbols-outlined">local_shipping</span> CARGAR TRANSPORTE
+            </h3>
+            <button onclick="app.closeModal('vehicle')" class="text-emerald-100 hover:text-white transition">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            </div>
+
+            <form onsubmit="app.submitVehicle(event)" class="p-6 space-y-5">
+            <div class="space-y-4">
+
+            <!--Seleccion de choferes-->
+            <div>
+            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Chofer</label>
+            <div class="relative">
+                <select name="driverId" id="select-driver"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none pl-10">
+                <!-- opciones se rellenan desde JS -->
+                </select>
+                <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">badge</span>
+            </div>
+            <p id="no-free-drivers" class="mt-1 text-[11px] text-amber-400 hidden">
+                No hay choferes libres. Cargá primero un transportista.
+            </p>
+            </div>
+
+
+                <!-- Patente -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Patente</label>
+                <div class="relative">
+                    <input type="text" name="plate" required placeholder="AA 123 BB"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none font-mono uppercase tracking-widest pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">tag</span>
+                </div>
+                </div>
+
+                <!-- Modelo -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Modelo</label>
+                <div class="relative">
+                    <input type="text" name="model" required placeholder="FH 440, 1933, etc."
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">directions_bus</span>
+                </div>
+                </div>
+
+                <!-- Marca -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Marca</label>
+                <div class="relative">
+                    <input type="text" name="brand" required placeholder="Scania, Volvo, Iveco..."
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">local_shipping</span>
+                </div>
+                </div>
+
+                <!-- Tipo remolque -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Tipo de unidad</label>
+                <div class="relative">
+                    <select name="trailerType" required
+                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none pl-10">
+                    <option value="" disabled selected>Selecciona...</option>
+                    <option value="acoplado">Con acoplado</option>
+                    <option value="semirremolque">Con semirremolque</option>
+                    <option value="sin_remolque">Sin remolque</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">sync_alt</span>
+                </div>
+                </div>
+                
+                <!-- Origen y destino -->
+                    <div class="grid grid-cols-2 gap-4 mt-2">
+                    <!-- Punto Origen -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                        Punto Origen
+                        </label>
+                        <select name="startLocation" id="select-start-vehicle"
+                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none">
+                        <option value="jujuy">S.S. de Jujuy</option>
+                        <option value="yala">Yala</option>
+                        <option value="volcan">Volcán</option>
+                        <option value="purmamarca">Purmamarca</option>
+                        <option value="lipan">Cuesta de Lipán</option>
+                        <option value="salinas">Salinas Grandes</option>
+                        <option value="susques">Susques</option>
+                        <option value="jama">Paso de Jama</option>
+                        </select>
+                    </div>
+
+                    <!-- Destino -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                        Destino
+                        </label>
+                        <select name="direction"
+                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none">
+                        <option value="asc">Hacia Frontera (Chile)</option>
+                        <option value="desc">Hacia Capital (Jujuy)</option>
+                        </select>
+                    </div>
+                    </div>
+                <!-- Archivos -->
+                <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    Título (imagen o archivo)
+                    </label>
+                    <input type="file" name="titleFile" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    RTV (imagen o archivo)
+                    </label>
+                    <input type="file" name="rtvFile" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    Póliza de seguro (imagen o archivo)
+                    </label>
+                    <input type="file" name="insuranceFile" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" />
+                </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                <button type="button" onclick="app.closeModal('vehicle')"
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                <button type="submit"
+                        class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transition transform active:scale-95">
+                GUARDAR TRANSPORTE
+                </button>
+            </div>
+            </form>
+        </div>
+        </div>
+
 
     <!-- MODAL: ALERTA -->
     <div id="modal-alert"
@@ -524,9 +765,16 @@
             markers: {}, // ID -> Marker
             selectedId: null
         };
+        const drivers = []; // cada elemento será { id, dni, name, license, dangerCard, insurance, company }
+
+        //Se le asigna un rol dependiendo el botón que aprete el usuario
+        const session = {
+            role: null // 'guest' | 'company'
+        };
 
         /* === CONTROLADOR === */
         const app = {
+            
             // 1. INIT
             init: () => {
                 setTimeout(() => {
@@ -569,6 +817,147 @@
                     btn.classList.add('bg-red-600');
                 }
             },
+            
+            //ingresar como invitado
+            enterAsGuest: async () => {
+                session.role = 'guest';
+
+                const btn = document.getElementById('btn-enter');
+                if (btn) {
+                    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> INICIANDO VISTA INVITADO...';
+                    btn.disabled = true;
+                    btn.classList.remove('animate-pulse');
+                }
+
+                try {
+                    await app.initMap();
+                    await app.calculateRealRoute();
+                    app.initData();
+                    app.startSimulation();
+
+                    const splash = document.getElementById('splash-screen');
+                    const main = document.getElementById('app-container');
+                    if (splash && main) {
+                        splash.style.opacity = '0';
+                        main.classList.remove('opacity-0');
+                        setTimeout(() => splash.style.display = 'none', 800);
+                    }
+
+                    app.configureGuestUI();
+                } catch (error) {
+                    console.error('Error crítico invitado:', error);
+                    if (btn) {
+                        btn.innerText = 'ERROR DE SISTEMA';
+                        btn.classList.add('bg-red-600');
+                        btn.disabled = false;
+                    }
+                }
+            },
+
+            configureGuestUI: () => {
+                // Ocultar botones de carga (tienen clase company-only en la navbar)
+                document.querySelectorAll('.company-only').forEach(el => {
+                    el.classList.add('hidden');
+                });
+
+                // Opcional: si quieres ocultar también pestaña "Choferes" completa
+                const tabDrivers = document.getElementById('tab-drivers');
+                const panelDrivers = document.getElementById('panel-drivers');
+                if (tabDrivers) tabDrivers.classList.add('hidden');
+                if (panelDrivers) panelDrivers.classList.add('hidden');
+
+                // Forzar que la pestaña activa sea Flota o Alertas (por ejemplo Alertas)
+                app.switchTab('alerts');
+            },
+            //ingresar como empresa
+            // Mostrar pantalla de login empresa
+            showCompanyLogin() {
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                    const loginScreen = document.getElementById('login-screen');
+                    loginScreen.classList.remove('hidden');
+                    loginScreen.classList.add('flex');
+                    setTimeout(() => loginScreen.style.opacity = '1', 50);
+                }, 700);
+    },
+
+    // Volver al splash
+    backToSplash() {
+        document.getElementById('login-error').classList.add('hidden');
+        document.getElementById('login-screen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('flex');
+            const splash = document.getElementById('splash-screen');
+            splash.style.display = 'flex';
+            setTimeout(() => splash.style.opacity = '1', 50);
+        }, 700);
+    },
+
+    // Procesar login empresa
+    loginCompany(event) {
+        event.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('login-error');
+
+        // Aquí puedes validar contra tu backend
+        // Por ahora, simulamos una validación simple
+        if (username && password) {
+            // Login exitoso
+            console.log('Login exitoso:', username);
+            document.getElementById('login-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-screen').classList.add('hidden');
+                // Aquí va tu código para mostrar la vista de empresa
+                console.log('Ingresando al sistema como empresa...');
+                app.enterSystem()
+            }, 700);
+        } else {
+            // Mostrar error
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => errorDiv.classList.add('hidden'), 3000);
+        }
+    },
+
+            populateDriverSelect: () => {
+            const select = document.getElementById('select-driver');
+            const warning = document.getElementById('no-free-drivers');
+            if (!select) return;
+
+            select.innerHTML = '';
+
+            const freeDrivers = drivers.filter(d => !d.assigned);
+
+            if (freeDrivers.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'Sin choferes disponibles';
+                opt.disabled = true;
+                opt.selected = true;
+                select.appendChild(opt);
+                if (warning) warning.classList.remove('hidden');
+            } else {
+                if (warning) warning.classList.add('hidden');
+
+                const optDefault = document.createElement('option');
+                optDefault.value = '';
+                optDefault.textContent = 'Selecciona un chofer...';
+                optDefault.disabled = true;
+                optDefault.selected = true;
+                select.appendChild(optDefault);
+
+                freeDrivers.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = `${d.name} (${d.dni})`;
+                    select.appendChild(opt);
+                });
+            }
+        },
+
 
             // 3. MAPA
             initMap: async () => {
@@ -673,6 +1062,7 @@
                 app.renderAlertList();
                 app.createAlertMarker(alert);
                 app.renderFleetList();
+                app.renderDriverList();
             },
 
             // 6. LOGICA TRANSPORTE (ACTUALIZADA)
@@ -770,6 +1160,101 @@
                     });
                 }, 50); 
             },
+        
+            openModal: (type) => {
+                // type: 'driver' | 'vehicle' | 'alert' | 'transport'
+                let id = type;
+
+                // compatibilidad con código viejo
+                if (type === 'transport') id = 'vehicle';
+
+                // si abrimos transporte, rellenar choferes libres
+                if (id === 'vehicle') {
+                    app.populateDriverSelect();
+                }
+
+                const modal = document.getElementById(`modal-${id}`);
+                const content = document.getElementById(`modal-${id}-content`);
+                if (!modal || !content) return;
+
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('opacity-0', 'scale-95');
+                    content.classList.add('opacity-100', 'scale-100');
+                }, 20);
+            },
+
+            closeModal: (type) => {
+                let id = type;
+                if (type === 'transport') id = 'vehicle';
+
+                const modal = document.getElementById(`modal-${id}`);
+                const content = document.getElementById(`modal-${id}-content`);
+                if (!modal || !content) return;
+
+                content.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 200);
+            },
+
+            submitDriver: (event) => {
+                event.preventDefault();
+                const form = event.target;
+
+                const driver = {
+                    id: Date.now(),
+                    name: form.driverName.value.trim(),
+                    dni: form.dni.value.trim(),
+                    license: form.license.value.trim(),
+                    dangerCard: form.dangerCard.value.trim(),
+                    insurance: form.insurance.value.trim(),
+                    company: form.company.value.trim(),
+                    assigned: false // importante: todavía sin transporte
+                };
+
+                drivers.push(driver);
+                app.closeModal('driver');
+                app.renderDriverList();
+            },
+
+            submitVehicle: (event) => {
+                event.preventDefault();
+                const form = event.target;
+
+                const driverId = form.driverId.value;
+                const driver = drivers.find(d => d.id.toString() === driverId);
+
+                if (!driver) {
+                    alert('Selecciona un chofer disponible.');
+                    return;
+                }
+
+                const data = {
+                    plate: form.plate.value.trim(),
+                    model: form.model.value.trim(),
+                    brand: form.brand.value.trim(),
+                    trailerType: form.trailerType.value,
+                    driver: driver.name,
+                    company: driver.company || 'Empresa',
+                    startLocation: form.startLocation.value,
+                    direction: form.direction.value
+                };
+
+                // Crear transporte en la simulación
+                app.createTransport(data);
+
+                // Marcar chofer como asignado
+                driver.assigned = true;
+
+                // ACTUALIZAR PANELES
+                app.renderFleetList();     // muestra el nuevo camión en "Flota"
+                app.renderDriverList();    // actualiza la lista de choferes
+
+                // Cerrar modal y limpiar
+                app.closeModal('vehicle');
+                form.reset();
+            },
 
             // === NUEVAS FUNCIONES DE NOTIFICACIÓN ===
             
@@ -832,6 +1317,71 @@
                     toast.classList.add('toast-exit-active');
                     setTimeout(() => toast.remove(), 500); // Esperar animación
                 }, 5000);
+            },
+
+
+            renderDriverList: () => {
+                const container = document.getElementById('panel-drivers');
+                const counter = document.getElementById('count-drivers');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                const mapDrivers = new Map();
+
+                // 1) desde transports precargados y nuevos
+                state.transports.forEach(t => {
+                    if (!t.driver) return;
+                    const name = t.driver.trim();
+                    if (!name) return;
+                    if (!mapDrivers.has(name)) {
+                        mapDrivers.set(name, { name, fromTransports: [], fromForm: null });
+                    }
+                    mapDrivers.get(name).fromTransports.push(t);
+                });
+
+                // 2) desde formulario de transportistas
+                drivers.forEach(d => {
+                    const name = d.name || d.dni;
+                    if (!mapDrivers.has(name)) {
+                        mapDrivers.set(name, { name, fromTransports: [], fromForm: d });
+                    } else {
+                        mapDrivers.get(name).fromForm = d;
+                    }
+                });
+
+                const list = Array.from(mapDrivers.values());
+                if (counter) counter.textContent = list.length.toString();
+
+                list.forEach(d => {
+                    const plates = d.fromTransports.map(t => t.plate).join(' · ') || 'Sin unidades asignadas';
+                    const initials = d.name.split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase();
+
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-900/60 border border-slate-700 rounded-xl p-3 flex items-center gap-3 hover:border-indigo-500 transition cursor-pointer';
+
+                    card.innerHTML = `
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-xs font-bold text-slate-300">
+                            ${initials}
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-slate-100">${d.name}</div>
+                            <div class="text-[11px] text-slate-400 uppercase tracking-wider">
+                                ${plates}
+                            </div>
+                        </div>
+                    `;
+
+                    if (d.fromTransports.length > 0) {
+                        const first = d.fromTransports[0];
+                        card.onclick = () => {
+                            app.selectTransport(first.id);
+                            app.switchTab('fleet');
+                        };
+                    }
+
+                    container.appendChild(card);
+                });
             },
 
             // 8. INTERACCIÓN UI
@@ -968,31 +1518,40 @@
             toggleSidebar: () => document.getElementById('sidebar').classList.toggle('-translate-x-full'),
 
             switchTab: (tab) => {
-                document.getElementById('tab-fleet').classList.toggle('tab-active', tab === 'fleet');
-                document.getElementById('tab-alerts').classList.toggle('tab-active', tab === 'alerts');
-                document.getElementById('panel-fleet').classList.toggle('hidden', tab !== 'fleet');
-                document.getElementById('panel-alerts').classList.toggle('hidden', tab !== 'alerts');
+                const btnFleet = document.getElementById('tab-fleet');
+                const btnDrivers = document.getElementById('tab-drivers');
+                const btnAlerts = document.getElementById('tab-alerts');
+
+                const panelFleet = document.getElementById('panel-fleet');
+                const panelDrivers = document.getElementById('panel-drivers');
+                const panelAlerts = document.getElementById('panel-alerts');
+
+                [btnFleet, btnDrivers, btnAlerts].forEach(b => b && b.classList.remove('tab-active'));
+                [panelFleet, panelDrivers, panelAlerts].forEach(p => p && p.classList.add('hidden'));
+
+                if (tab === 'fleet') {
+                    btnFleet && btnFleet.classList.add('tab-active');
+                    panelFleet && panelFleet.classList.remove('hidden');
+                } else if (tab === 'drivers') {
+                    btnDrivers && btnDrivers.classList.add('tab-active');
+                    panelDrivers && panelDrivers.classList.remove('hidden');
+                    app.renderDriverList(); // ← aquí también
+                } else if (tab === 'alerts') {
+                    btnAlerts && btnAlerts.classList.add('tab-active');
+                    panelAlerts && panelAlerts.classList.remove('hidden');
+                }
             },
 
-            openModal: (id) => {
-                const m = document.getElementById(`modal-${id}`);
-                const c = document.getElementById(`modal-${id}-content`);
-                m.classList.remove('hidden');
-                setTimeout(() => { c.classList.remove('scale-95', 'opacity-0'); c.classList.add('scale-100', 'opacity-100'); }, 10);
-            },
-
-            closeModal: (id) => {
-                const m = document.getElementById(`modal-${id}`);
-                const c = document.getElementById(`modal-${id}-content`);
-                c.classList.remove('scale-100', 'opacity-100'); c.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => m.classList.add('hidden'), 300);
-            },
 
             resetView: () => state.map && (state.map.setCenter(CONFIG.center), state.map.setZoom(CONFIG.zoom))
         };
 
         // Iniciar al Cargar
         document.addEventListener('DOMContentLoaded', app.init);
+
+
+        
+
 
     </script>
 
