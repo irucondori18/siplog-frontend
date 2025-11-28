@@ -14,7 +14,7 @@ import { iconSubset } from './icons/icon-subset';
     imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
-  title = 'CoreUI Angular Admin Template';
+  // title = 'CoreUI Angular Admin Template';
 
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   readonly #iconSetService = inject(IconSetService);
 
   constructor() {
-    this.#titleService.setTitle(this.title);
+    // this.#titleService.setTitle(this.title);
     // iconSet singleton
     this.#iconSetService.icons = { ...iconSubset };
     this.#colorModeService.localStorageItemName.set('coreui-free-angular-admin-template-theme-default');

@@ -1,5 +1,5 @@
 <!--sidebar-->
-<c-sidebar
+<!-- <c-sidebar
   #sidebar1="cSidebar"
   class="d-print-none sidebar sidebar-fixed border-end"
   colorScheme="dark"
@@ -22,23 +22,738 @@
       <button cSidebarToggler aria-label="Toggle sidebar fold"></button>
     </c-sidebar-footer>
   }
-</c-sidebar>
+</c-sidebar> -->
 
 <!--main-->
-<div class="wrapper d-flex flex-column min-vh-100">
-  <!--app-header-->
+<!-- <div class="wrapper d-flex flex-column min-vh-100">
   <app-default-header
     [cShadowOnScroll]="'sm'"
     class="mb-4 d-print-none header header-sticky p-0 shadow-sm"
     position="sticky"
     sidebarId="sidebar1"
   />
-  <!--app-body-->
   <div class="body flex-grow-1">
     <c-container breakpoint="lg" class="h-auto px-4">
       <router-outlet />
     </c-container>
   </div>
-  <!--app footer-->
   <app-default-footer />
+</div> -->
+
+
+
+<body class="h-screen w-screen relative">
+    <!-- 1. PANTALLA DE CARGA (SPLASH SCREEN) -->
+    <div id="splash-screen"
+        class="fixed inset-0 z-[100] bg-slate-900 flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="scan-line"></div>
+        <!-- Grid Background -->
+        <div class="absolute inset-0 opacity-10"
+            style="background-image: radial-gradient(#6366f1 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+        <div class="relative z-10 text-center max-w-2xl px-4">
+            <div
+                class="inline-flex p-6 rounded-2xl bg-slate-800 border border-slate-700 shadow-2xl mb-8 relative group">
+                <div
+                    class="absolute inset-0 bg-indigo-500 blur-xl opacity-20 group-hover:opacity-40 transition duration-500">
+                </div>
+                <span class="material-symbols-outlined text-6xl text-indigo-500 relative">local_shipping</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black font-tech tracking-widest text-white mb-2">
+                SIPLoG <span class="text-indigo-500">JUJUY</span>
+            </h1>
+            <p
+                class="text-slate-400 text-sm md:text-base uppercase tracking-[0.3em] border-y border-slate-800 py-3 mb-8">
+                Corredor Bioceánico Capricornio
+            </p>
+
+            <!-- Console Log Visual -->
+            <!-- <div
+                class="bg-slate-950/80 backdrop-blur text-left p-4 rounded-lg border border-slate-800 font-mono text-xs space-y-2 mb-8 shadow-inner max-w-md mx-auto">
+                <div class="flex justify-between text-green-500"><span>&gt; SYSTEM_CORE</span><span>ONLINE</span></div>
+                <div class="flex justify-between text-green-500"><span>&gt; GEO_SATELLITE</span><span>CONNECTED</span>
+                </div>
+                <div class="flex justify-between text-indigo-400"><span>&gt; MAP_RENDERER</span><span id="status-api"
+                        class="text-green-500 font-bold animate-none">READY</span></div>
+            </div> -->
+            <div class="relative z-10 w-full max-w-md px-4 mx-auto">
+              <!-- Header -->
+              <!-- <div class="text-center mb-8">
+                  <h2 class="text-3xl md:text-4xl font-black font-tech tracking-widest text-white mb-2">
+                      INICIAR <span class="text-emerald-500">SESIÓN</span>
+                  </h2>
+                  <p class="text-slate-400 text-sm uppercase tracking-wider">Acceso EMPRESA</p>
+              </div> -->
+
+              <!-- Formulario de Login -->
+              <form id="login-form" onsubmit="app.login(event)" 
+                  class="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-2xl p-8 shadow-2xl">
+                  
+                  <!-- Campo Usuario -->
+                  <div class="mb-6">
+                      <label class="block text-slate-300 text-sm font-bold mb-2 uppercase tracking-wide" for="username">
+                          <span class="material-symbols-outlined text-base align-middle mr-1">person</span>
+                          Usuario
+                      </label>
+                      <input type="text" id="username" required
+                          class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 transition"
+                          placeholder="Ingrese su usuario">
+                  </div>
+
+                  <!-- Campo Contraseña -->
+                  <div class="mb-6">
+                      <label class="block text-slate-300 text-sm font-bold mb-2 uppercase tracking-wide" for="password">
+                          <span class="material-symbols-outlined text-base align-middle mr-1">lock</span>
+                          Contraseña
+                      </label>
+                      <input type="password" id="password" required
+                          class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 transition"
+                          placeholder="Ingrese su contraseña">
+                  </div>
+
+                  <!-- Mensaje de Error -->
+                  <div id="login-error" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-300 text-sm">
+                      <span class="material-symbols-outlined text-base align-middle mr-1">error</span>
+                      <span id="login-error-text">Usuario o contraseña incorrectos</span>
+                  </div>
+
+                  <button id="btn-enter"
+                    class="mt-4 group relative bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-xl font-bold tracking-wider shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait overflow-hidden cursor-pointer animate-pulse">
+                    <div
+                        class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12">
+                    </div>
+                    <span class="relative flex items-center gap-3">INICIAR SESIÓN<span
+                            class="material-symbols-outlined">arrow_forward</span></span>
+                </button>
+
+                  <!-- Texto Registrarse -->
+                  <div class="mt-6 text-center">
+                      <p class="text-slate-400 text-sm">
+                          ¿No tenés cuenta?
+                          <a href="#" class="text-emerald-400 hover:text-emerald-300 font-semibold underline-offset-2 hover:underline">
+                              Registrarse
+                          </a>
+                      </p>
+                  </div>
+
+              </form>
+            </div>            
+            <!--Acceso como invitado-->
+            <!-- <button id="btn-enter" onclick="app.enterAsGuest()"
+                class="mt-4 group relative bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-xl font-bold tracking-wider shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait overflow-hidden cursor-pointer animate-pulse">
+                <div
+                    class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12">
+                </div>
+                <span class="relative flex items-center gap-3">INICIAR SESIÓN<span
+                        class="material-symbols-outlined">arrow_forward</span></span>
+            </button> -->
+            <br><br>
+
+            <!--Acceso como empresa con login-->
+            <!-- <button id="btn-enter" onclick="app.showCompanyLogin()"
+                class="group relative bg-emerald-500 hover:bg-emerald-500 text-white px-12 py-4 rounded-xl font-bold tracking-wider shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait overflow-hidden cursor-pointer animate-pulse">
+                <div
+                    class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12">
+                </div>
+                <span class="relative flex items-center gap-3">INGRESAR COMO EMPRESA<span
+                        class="material-symbols-outlined">arrow_forward</span></span>
+            </button> -->
+        </div>
+    </div>
+    <!-- PANTALLA DE LOGIN DE EMPRESA -->
+     <!-- 2. PANTALLA DE LOGIN EMPRESA -->
+<div id="login-screen" class="fixed inset-0 z-[100] bg-slate-900 hidden flex-col items-center justify-center transition-opacity duration-700">
+    <div class="scan-line"></div>
+    <!-- Grid Background -->
+    <div class="absolute inset-0 opacity-10"
+        style="background-image: radial-gradient(#6366f1 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    
 </div>
+    <!-- 2. APLICACIÓN PRINCIPAL -->
+    <div id="app-container" class="h-full flex flex-col opacity-0 transition-opacity duration-1000">
+
+        <!-- Navbar -->
+        <header
+            class="bg-slate-900 border-b border-slate-700 h-16 flex items-center justify-between px-4 z-30 shadow-lg shrink-0">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 text-indigo-400">
+                    <span class="material-symbols-outlined text-3xl">local_shipping</span>
+                    <div class="h-8 w-px bg-slate-700 mx-2"></div>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-white tracking-wide font-tech">SIPLoG <span
+                            class="text-indigo-500">JUJUY</span></h2>
+                      <div class="text-[14px] text-green-400 uppercase font-mono font-bold" id="user-role">
+                          
+                      </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                
+                
+                <!-- Botón: Cargar transportista -->
+                <button onclick="app.openModal('driver')"
+                    class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition hover:-translate-y-0.5 company-only">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    <span class="hidden sm:inline">CARGAR TRANSPORTISTA</span>
+                </button>
+
+                <!-- Botón: Cargar transporte -->
+                <button onclick="app.openModal('vehicle')"
+                    class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition hover:-translate-y-0.5 company-only">
+                    <span class="material-symbols-outlined text-sm">local_shipping</span>
+                    <span class="hidden sm:inline">CARGAR TRANSPORTE</span>
+                </button>
+
+                <button onclick="app.openModal('recorrido')"
+                    id="iniciar_recorrido"
+                    class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition hover:-translate-y-0.5 company-only">
+                    <span class="material-symbols-outlined text-sm">start</span>
+                    <span class="hidden sm:inline">INICIAR RECORRIDO</span>
+                </button>
+
+
+                <div class="border-l border-slate-700 pl-4 ml-2 hidden md:block text-right ">
+                    <div class="text-[10px] text-slate-500 uppercase">Hora Local</div>
+                    <div class="font-mono text-slate-200 font-bold" id="clock">{{horaActual}}</div>
+                </div>
+                
+
+                <button type="button" onclick="app.backToSplash()"
+                          class="flex-1 bg-red-700 hover:bg-slate-600 text-white px-3 py-3 rounded-lg font-bold transition">
+                          <span class="material-symbols-outlined text-base align-middle mr-1">exit_to_app</span>
+                      </button>
+                <!-- <button onclick="app.toggleSidebar()" class="md:hidden text-slate-400 hover:text-white"><span
+                        class="material-symbols-outlined">menu</span></button> -->
+            </div>
+        </header>
+
+        <!-- Layout -->
+        <main class="flex-1 flex relative overflow-hidden">
+
+            <!-- Sidebar -->
+            <aside id="sidebar"
+                class="absolute md:relative z-20 w-full md:w-80 h-full bg-slate-900 border-r border-slate-700 flex flex-col sidebar-transition transform -translate-x-full md:translate-x-0 shadow-2xl">
+                <!-- Tabs -->
+                <div class="flex border-b border-slate-700 bg-slate-800/50">
+                    <button id="tab-fleet" onclick="app.switchTab('fleet')"
+                        class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition tab-active flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">local_shipping</span> Flota (<span
+                            id="count-fleet">0</span>)
+                    </button>
+                    <button id="tab-drivers" onclick="app.switchTab('drivers')"
+                    class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    Choferes
+                    </button>
+                    <button id="tab-alerts" onclick="app.switchTab('alerts')"
+                        class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">warning</span> Alertas
+                    </button>
+                </div>
+
+                <!-- Panel: Flota -->
+                <div id="panel-fleet" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    <!-- Lista generada por JS -->
+                </div>
+                <!-- Panel: Choferes -->
+                <div id="panel-drivers" class="hidden flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    <!-- Lista de choferes generada por JS -->
+                </div>
+
+                <!-- Panel: Alertas -->
+                <div id="panel-alerts" class="hidden flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    <button onclick="app.openModal('alert')"
+                        class="w-full bg-amber-500/10 border border-amber-500/50 text-amber-500 hover:bg-amber-500 hover:text-white p-3 rounded-lg flex items-center justify-center gap-2 text-sm transition font-bold mb-4 group">
+                        <span class="material-symbols-outlined group-hover:animate-ping">add_alert</span> NUEVA ALERTA
+                    </button>
+                    <div id="alert-list-content" class="space-y-3">
+                        <!-- Lista generada por JS -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Mapa -->
+            <div class="flex-1 relative bg-slate-800 w-full h-full">
+                <div id="map" class="w-full h-full block"></div>
+
+                <!-- NOTIFICATION CONTAINER (NUEVO) -->
+                <div id="notification-area" class="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full max-w-md px-4">
+                    <!-- Las notificaciones se inyectarán aquí -->
+                </div>
+
+                <!-- Botón Reset Vista -->
+                <div class="absolute top-4 right-4 flex flex-col gap-2">
+                    <button onclick="app.resetView()"
+                        class="bg-slate-900 text-slate-300 p-3 rounded-lg shadow-xl border border-slate-700 hover:text-white hover:border-indigo-500 transition transform hover:scale-105">
+                        <span class="material-symbols-outlined">my_location</span>
+                    </button>
+                </div>
+
+                <!-- Tarjeta de Tracking (Flotante) -->
+                <div id="track-card"
+                    class="absolute bottom-6 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-slate-900/95 backdrop-blur-md border border-slate-700 p-5 rounded-2xl shadow-2xl transform translate-y-[150%] transition-transform duration-300 z-10">
+                    <div class="flex justify-between items-start mb-4 border-b border-slate-700 pb-3">
+                        <div>
+                            <div class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-1">Unidad
+                                Monitoreada</div>
+                            <div id="card-plate" class="text-2xl font-bold font-tech text-white">---</div>
+                        </div>
+                        <button onclick="app.closeCard()" class="text-slate-500 hover:text-white"><span
+                                class="material-symbols-outlined">close</span></button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <div class="text-slate-500 text-[10px] uppercase font-bold">Conductor</div>
+                            <div id="card-driver" class="text-slate-200 truncate font-medium mt-1">---</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <div class="text-slate-500 text-[10px] uppercase font-bold">Velocidad</div>
+                            <div id="card-speed" class="text-green-400 font-mono font-bold mt-1">0 km/h</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mb-2 px-1 font-mono">
+                        <span id="card-from">ORIGEN</span>
+                        <span id="card-to">DESTINO</span>
+                    </div>
+                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="card-progress"
+                            class="h-full bg-indigo-500 w-0 transition-all duration-500 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: CARGAR TRANSPORTISTA -->
+        <div id="modal-driver"
+            class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-driver-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-indigo-600 p-5 flex justify-between items-center shadow-lg">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                <span class="material-symbols-outlined">badge</span> CARGAR TRANSPORTISTA
+            </h3>
+            <button onclick="app.closeModal('driver')" class="text-indigo-200 hover:text-white transition">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            </div>
+
+          <form (ngSubmit)="saveTransportista(form.value)" #form="ngForm" class="p-6 space-y-5">
+            <div class="space-y-4">
+                <!-- Nombre -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Nombre y apellido</label>
+                <div class="relative">
+                    <input type="text" name="nombre_completo" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Juan Pérez" ngModel>
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">person</span>
+                </div>
+                </div>
+
+                <!-- DNI -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">DOCUMENTO IDENTIFICACION</label>
+                <div class="relative">
+                    <input type="text" name="documento_identificacion" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="12345678" ngModel>
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">credit_card</span>
+                </div>
+                </div>
+                <!-- Licencia de conducir -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Licencia de conducir</label>
+                  <input type="file" name="licencia_conducir" required
+                      class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer"
+                      accept="image/*,.pdf"
+                      (change)="onFileSelected($event, 'licencia')" ngModel>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Carnet de cargas peligrosas</label>
+                  <input type="file" name="carnet_cargas_peligrosas"
+                      class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer"
+                      accept="image/*,.pdf"
+                      (change)="onFileSelected($event, 'carnet')" ngModel>
+                  <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">warning</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    Póliza de seguro / ART</label>
+                    <input type="file" name="poliza_seguro_accidentes_personales_art"
+                      accept="image/*,.pdf,.doc,.docx"
+                      (change)="onFileSelected($event, 'poliza')"
+                      class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" />
+
+                </div>
+
+                
+
+                <!-- Empresa (se completa desde login) -->
+                <!-- <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Empresa</label>
+                <div class="relative">
+                    <input type="text" id="driver-company" name="company" required readonly
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white outline-none pl-10 transition"
+                        value="Empresa logueada">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">business</span>
+                </div>
+                </div> -->
+            </div>
+
+            <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                <button type="button" (click)="closeModal('driver')" 
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                <!-- <button type="button" (click)="closeModal('driver')" 
+                  class="text-indigo-200 hover:text-white transition">
+                  <span class="material-symbols-outlined">close</span> -->
+                <!-- </button> -->
+                <button type="submit"
+                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg hover:shadow-indigo-500/30 transition transform active:scale-95">
+                GUARDAR TRANSPORTISTA
+                </button>
+            </div>
+            </form>
+        </div>
+        </div>
+
+        <!-- MODAL: CARGAR TRANSPORTE -->
+        <div id="modal-vehicle"
+            class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-vehicle-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-indigo-600 p-5 flex justify-between items-center shadow-lg">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                <span class="material-symbols-outlined">local_shipping</span> CARGAR TRANSPORTE
+            </h3>
+            <button onclick="app.closeModal('vehicle')" class="text-indigo-100 hover:text-white transition">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            </div>
+
+            <form (ngSubmit)="saveTransporte(formTransporte.value)" #formTransporte="ngForm"  class="p-6 space-y-5">
+            <div class="space-y-4">
+                <!-- Patente -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Patente</label>
+                <div class="relative">
+                    <input type="text" name="patente" required placeholder="AA 123 BB" ngModel
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none font-mono uppercase tracking-widest pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">tag</span>
+                </div>
+                </div>
+
+                <!-- Modelo -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Modelo</label>
+                <div class="relative">
+                    <input type="text" name="modelo" required placeholder="FH 440, 1933, etc." ngModel
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">directions_bus</span>
+                </div>
+                </div>
+
+                <!-- Marca -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Marca</label>
+                <div class="relative">
+                    <input type="text" name="marca" required placeholder="Scania, Volvo, Iveco..." ngModel
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">local_shipping</span>
+                </div>
+                </div>
+
+                <!-- Tipo remolque -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Tipo de unidad</label>
+                <div class="relative">
+                    <select name="acoplado" required ngModel
+                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none cursor-pointer transition appearance-none pl-10">
+                    <option value="" disabled selected>Selecciona...</option>
+                    <option value="acoplado">Con acoplado</option>
+                    <option value="semirremolque">Con semirremolque</option>
+                    <option value="sin_remolque">Sin remolque</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">sync_alt</span>
+                </div>
+                </div>
+                
+                
+                <!-- Archivos -->
+                <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    Título
+                    </label>
+                    <input type="file" name="titulo" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" 
+                        (change)="onFileSelected($event, 'titulo')"/>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    RTV
+                    </label>
+                    <input type="file" name="rtv" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" 
+                        (change)="onFileSelected($event, 'rtv')"/>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    Póliza de seguro
+                    </label>
+                    <input type="file" name="poliza_seguro" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" 
+                        (change)="onFileSelected($event, 'poliza_seguro')"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                <button type="button" onclick="app.closeModal('vehicle')"
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                <button type="submit"
+                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg hover:shadow-indigo-500/30 transition transform active:scale-95">
+                GUARDAR TRANSPORTE
+                </button>
+            </div>
+            </form>
+        </div>
+        </div>
+
+        <!-- MODAL: INICIAR RECORRIDO -->
+        <div id="modal-recorrido"
+            class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-recorrido-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-emerald-600 p-5 flex justify-between items-center shadow-lg">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                <span class="material-symbols-outlined">badge</span> INICIAR RECORRIDO
+            </h3>
+            <button onclick="app.closeModal('recorrido')" class="text-emerald-200 hover:text-white transition">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            </div>
+
+          <form (ngSubmit)="saveRecorrido(formRecorrido.value)" #formRecorrido="ngForm" class="p-6 space-y-5">
+            <div class="space-y-4">
+                <!--Seleccion de choferes-->
+              <div id="driver_selection">
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Chofer</label>
+                <div class="relative">
+                    <select name="id_driver" id="select-driver"
+                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none pl-10"
+                            ngModel>
+                    </select>
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">badge</span>
+                </div>
+                <p id="no-free-drivers" class="mt-1 text-[11px] text-amber-400 hidden">
+                    No hay choferes libres. Cargá primero un transportista.
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Transporte</label>
+                <div class="relative">
+                    <select name="id_transporte" id="select-transport"
+                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none pl-10"
+                            ngModel>
+                    </select>
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">badge</span>
+                </div>
+                <p id="no-free-transports" class="mt-1 text-[11px] text-amber-400 hidden">
+                    No hay choferes libres. Cargá primero un transportista.
+                </p>
+              </div>
+
+              <!-- Origen y destino -->
+              <div class="grid grid-cols-2 gap-4 mt-2">
+              <div>
+                  <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                  Origen
+                  </label>
+                  <select name="inicio" id="select-start-vehicle"
+                          class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none"
+                          ngModel>
+                                                                      <option value="" disabled selected>Selecciona...</option>
+                  <option value="jujuy">S.S. de Jujuy</option>
+                  <option value="yala">Yala</option>
+                  <option value="volcan">Volcán</option>
+                  <option value="purmamarca">Purmamarca</option>
+                  <option value="lipan">Cuesta de Lipán</option>
+                  <option value="salinas">Salinas Grandes</option>
+                  <option value="susques">Susques</option>
+                  <option value="jama">Paso de Jama</option>
+                  </select>
+              </div>
+
+              <div>
+                  <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                  Destino
+                  </label>
+                  <select name="destino"
+                          class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none"
+                          ngModel>
+                                                                              <option value="" disabled selected>Selecciona...</option>
+
+                  <option value="asc">Hacia Frontera (Chile)</option>
+                  <option value="desc">Hacia Capital (Jujuy)</option>
+                  </select>
+              </div>
+              </div>
+                
+
+                <!-- Empresa (se completa desde login) -->
+                <!-- <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Empresa</label>
+                <div class="relative">
+                    <input type="text" id="driver-company" name="company" required readonly
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white outline-none pl-10 transition"
+                        value="Empresa logueada">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">business</span>
+                </div>
+                </div> -->
+            </div>
+
+            <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                <button type="button" (click)="closeModal('recorrido')" 
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                <!-- <button type="button" (click)="closeModal('driver')" 
+                  class="text-indigo-200 hover:text-white transition">
+                  <span class="material-symbols-outlined">close</span> -->
+                <!-- </button> -->
+                <button type="submit"
+                        class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transition transform active:scale-95">
+                  INICIAR RECORRIDO
+                </button>
+            </div>
+            </form>
+        </div>
+        </div>
+
+
+    <!-- MODAL: ALERTA -->
+    <div id="modal-alert"
+        class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-alert-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-amber-600 p-5 flex justify-between items-center shadow-lg">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                    <span class="material-symbols-outlined">warning</span> REPORTAR ALERTA
+                </h3>
+                <button onclick="app.closeModal('alert')" class="text-amber-100 hover:text-white transition"><span
+                        class="material-symbols-outlined">close</span></button>
+            </div>
+            <form onsubmit="app.submitAlert(event)" class="p-6 space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Tipo de
+                        Alerta</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="clima" checked="" class="peer hidden">
+                            <div
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-amber-600/20 peer-checked:border-amber-500 peer-checked:text-amber-400 transition">
+                                <span class="material-symbols-outlined block text-2xl mb-1">wb_sunny</span>
+                                <span class="text-[10px] font-bold">CLIMA</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="road" class="peer hidden">
+                            <div
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-blue-400 transition">
+                                <span class="material-symbols-outlined block text-2xl mb-1">road</span>
+                                <span class="text-[10px] font-bold">ESTADO DE RUTA</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="accident" class="peer hidden">
+                            <div
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-red-600/20 peer-checked:border-red-500 peer-checked:text-red-400 transition">
+                                <span class="material-symbols-outlined block text-2xl mb-1">car_crash</span>
+                                <span class="text-[10px] font-bold">ACCIDENTE VIAL</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Ubicación
+                        Aproximada</label>
+                    <div class="relative">
+                        <select id="select-alert-loc" name="location"
+                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-amber-500 outline-none cursor-pointer transition appearance-none pl-10">
+                            <option value="jujuy">S.S. de Jujuy</option>
+                            <option value="yala">Yala</option>
+                            <option value="volcan">Volcán</option>
+                            <option value="purmamarca">Purmamarca</option>
+                            <option value="lipan">Cuesta de Lipán</option>
+                            <option value="salinas">Salinas Grandes</option>
+                            <option value="susques">Susques</option>
+                            <option value="jama">Paso de Jama</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">place</span>
+                    </div>
+                </div>
+                <div class="relative">
+                  <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Hora</label>
+                  <input type="time" name="hour"
+                      class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white pl-10 focus:border-amber-500 outline-none transition">
+
+                  <!-- Tapamos el ícono nativo -->
+                  <span class="absolute right-3 top-9 bg-slate-800 w-6 h-6"></span>
+
+                  <!-- Tu ícono de la izquierda (este sí se ve) -->
+                  <span class="material-symbols-outlined absolute left-3 top-9 text-slate-500">
+                      schedule
+                  </span>
+              </div>
+
+
+
+                <div id="road-status-wrapper">
+                  <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Estado</label>
+                  <div class="relative">
+                      <select name="road_status" required
+                          class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-amber-500 outline-none cursor-pointer transition appearance-none pl-10">
+                          <option value="buena">Bueno/a</option>
+                          <option value="regular">Regular</option>
+                          <option value="mala">Malo/a</option>
+                          <option value="intransitable">Crítico</option>
+                      </select>
+                      <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">traffic</span>
+                  </div>
+              </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Adjuntar evidencia</label>
+                  <input type="file" name="evidencia" required
+                      class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer"
+                      accept="image/*,.pdf">
+                </div>
+                <div>
+                    <label
+                        class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Observaciones</label>
+                    <textarea name="desc" rows="3" placeholder="Detalles..."
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-amber-500 outline-none resize-none transition"></textarea>
+                </div>
+                <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                    <button type="button" onclick="app.closeModal('alert')"
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                    <button type="submit"
+                        class="flex-1 py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg shadow-lg hover:shadow-amber-500/30 transition transform active:scale-95">ENVIAR
+                        REPORTE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../../../src/assets/app.js" ></script>
+</body>

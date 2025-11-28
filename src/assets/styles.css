@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Chakra+Petch:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #0f172a;
+    overflow: hidden;
+    color: #e2e8f0;
+}
+
+.font-tech {
+    font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Animaciones de Interfaz */
+@keyframes scanline {
+    0% {
+        transform: translateY(-100%);
+    }
+
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(99, 102, 241, 0.1), transparent);
+    animation: scanline 3s linear infinite;
+    pointer-events: none;
+    z-index: 5;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    position: relative;
+}
+
+.live-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: #22c55e;
+    animation: pulse-ring 1.5s infinite;
+}
+
+/* Estilos de Mapa y Scroll */
+#map {
+    height: 100%;
+    width: 100%;
+    background-color: #1e293b;
+}
+
+/* Fallback color */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 3px;
+}
+
+.sidebar-transition {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-active {
+    border-bottom: 2px solid #6366f1;
+    color: #fff;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* Estilos para Notificaciones Toast */
+.toast-enter {
+    transform: translateX(100%);
+    opacity: 0;
+}
+.toast-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toast-exit {
+    transform: translateX(0);
+    opacity: 1;
+}
+.toast-exit-active {
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="time"] {
+    position: relative;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+}

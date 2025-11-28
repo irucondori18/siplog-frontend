@@ -1,0 +1,1422 @@
+
+
+<body class="h-screen w-screen relative">
+    <!-- 1. PANTALLA DE CARGA (SPLASH SCREEN) -->
+    <div id="splash-screen"
+        class="fixed inset-0 z-[100] bg-slate-900 flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="scan-line"></div>
+        <!-- Grid Background -->
+        <div class="absolute inset-0 opacity-10"
+            style="background-image: radial-gradient(#6366f1 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+        <div class="relative z-10 text-center max-w-2xl px-4">
+            <div
+                class="inline-flex p-6 rounded-2xl bg-slate-800 border border-slate-700 shadow-2xl mb-8 relative group">
+                <div
+                    class="absolute inset-0 bg-indigo-500 blur-xl opacity-20 group-hover:opacity-40 transition duration-500">
+                </div>
+                <span class="material-symbols-outlined text-7xl text-indigo-500 relative">local_shipping</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-black font-tech tracking-widest text-white mb-2">
+                SIPLOG <span class="text-indigo-500">JUJUY</span>
+            </h1>
+            <p
+                class="text-slate-400 text-sm md:text-base uppercase tracking-[0.3em] border-y border-slate-800 py-3 mb-8">
+                Sistema de Información y Planificación Logística
+            </p>
+
+            <!-- Console Log Visual -->
+            <div
+                class="bg-slate-950/80 backdrop-blur text-left p-4 rounded-lg border border-slate-800 font-mono text-xs space-y-2 mb-8 shadow-inner max-w-md mx-auto">
+                <div class="flex justify-between text-green-500"><span>&gt; SYSTEM_CORE</span><span>ONLINE</span></div>
+                <div class="flex justify-between text-green-500"><span>&gt; GEO_SATELLITE</span><span>CONNECTED</span>
+                </div>
+                <div class="flex justify-between text-indigo-400"><span>&gt; MAP_RENDERER</span><span id="status-api"
+                        class="text-green-500 font-bold animate-none">READY</span></div>
+            </div>
+            <!--Acceso como invitado-->
+            <button id="btn-enter" onclick="app.enterAsGuest()"
+                class="group relative bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-xl font-bold tracking-wider shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait overflow-hidden cursor-pointer animate-pulse">
+                <div
+                    class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12">
+                </div>
+                <span class="relative flex items-center gap-3">INGRESAR AL SISTEMA COMO INVITADO<span
+                        class="material-symbols-outlined">arrow_forward</span></span>
+            </button>
+            <br><br>
+
+            <!--Acceso como empresa con login-->
+            <button id="btn-enter" onclick="app.showCompanyLogin()"
+                class="group relative bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-xl font-bold tracking-wider shadow-[0_0_30px_rgba(79,70,229,0.4)] transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-wait overflow-hidden cursor-pointer animate-pulse">
+                <div
+                    class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12">
+                </div>
+                <span class="relative flex items-center gap-3">INGRESAR AL SISTEMA COMO EMPRESA<span
+                        class="material-symbols-outlined">arrow_forward</span></span>
+            </button>
+        </div>
+    </div>
+    <!-- PANTALLA DE LOGIN DE EMPRESA -->
+     <!-- 2. PANTALLA DE LOGIN EMPRESA -->
+<div id="login-screen" class="fixed inset-0 z-[100] bg-slate-900 hidden flex-col items-center justify-center transition-opacity duration-700">
+    <div class="scan-line"></div>
+    <!-- Grid Background -->
+    <div class="absolute inset-0 opacity-10"
+        style="background-image: radial-gradient(#6366f1 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <div class="relative z-10 w-full max-w-md px-4">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex p-4 rounded-xl bg-slate-800 border border-slate-700 shadow-2xl mb-4">
+                <span class="material-symbols-outlined text-5xl text-emerald-500">business</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black font-tech tracking-widest text-white mb-2">
+                ACCESO <span class="text-emerald-500">EMPRESA</span>
+            </h2>
+            <p class="text-slate-400 text-sm uppercase tracking-wider">Autenticación requerida</p>
+        </div>
+
+        <!-- Formulario de Login -->
+        <form id="login-form" onsubmit="app.loginCompany(event)" 
+            class="bg-slate-800/50 backdrop-blur border border-slate-700 rounded-2xl p-8 shadow-2xl">
+            
+            <!-- Campo Usuario -->
+            <div class="mb-6">
+                <label class="block text-slate-300 text-sm font-bold mb-2 uppercase tracking-wide" for="username">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">person</span>
+                    Usuario
+                </label>
+                <input type="text" id="username" required
+                    class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 transition"
+                    placeholder="Ingrese su usuario">
+            </div>
+
+            <!-- Campo Contraseña -->
+            <div class="mb-6">
+                <label class="block text-slate-300 text-sm font-bold mb-2 uppercase tracking-wide" for="password">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">lock</span>
+                    Contraseña
+                </label>
+                <input type="password" id="password" required
+                    class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/50 transition"
+                    placeholder="Ingrese su contraseña">
+            </div>
+
+            <!-- Mensaje de Error -->
+            <div id="login-error" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-300 text-sm">
+                <span class="material-symbols-outlined text-base align-middle mr-1">error</span>
+                <span id="login-error-text">Usuario o contraseña incorrectos</span>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex gap-3">
+                <button type="button" onclick="app.backToSplash()"
+                    class="flex-1 bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold transition">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">arrow_back</span>
+                    VOLVER
+                </button>
+                <button type="submit"
+                    class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-lg font-bold shadow-[0_0_20px_rgba(16,185,129,0.4)] transition transform hover:scale-105">
+                    <span class="material-symbols-outlined text-base align-middle mr-1">login</span>
+                    INGRESAR
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+    <!-- 2. APLICACIÓN PRINCIPAL -->
+    <div id="app-container" class="h-full flex flex-col opacity-0 transition-opacity duration-1000">
+
+        <!-- Navbar -->
+        <header
+            class="bg-slate-900 border-b border-slate-700 h-16 flex items-center justify-between px-4 z-30 shadow-lg shrink-0">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 text-indigo-400">
+                    <span class="material-symbols-outlined text-3xl">satellite_alt</span>
+                    <div class="h-8 w-px bg-slate-700 mx-2"></div>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-white tracking-wide font-tech">SIPLOG <span
+                            class="text-indigo-500">JUJUY</span></h2>
+                    <div class="flex items-center gap-2 text-[10px] text-green-400 font-mono">
+                        <div class="live-dot"></div> SISTEMA ONLINE
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:block text-right border-r border-slate-700 pr-4 mr-2">
+                    <div class="text-[10px] text-slate-500 uppercase">Hora Local</div>
+                    <div class="font-mono text-slate-200 font-bold" id="clock">07:13:35</div>
+                </div>
+                
+                <!-- Botón: Cargar transportista -->
+                <button onclick="app.openModal('driver')"
+                    class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition hover:-translate-y-0.5 company-only">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    <span class="hidden sm:inline">CARGAR TRANSPORTISTA</span>
+                </button>
+
+                <!-- Botón: Cargar transporte -->
+                <button onclick="app.openModal('vehicle')"
+                    class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition hover:-translate-y-0.5 company-only">
+                    <span class="material-symbols-outlined text-sm">local_shipping</span>
+                    <span class="hidden sm:inline">CARGAR TRANSPORTE</span>
+                </button>
+
+                <button onclick="app.toggleSidebar()" class="md:hidden text-slate-400 hover:text-white"><span
+                        class="material-symbols-outlined">menu</span></button>
+            </div>
+        </header>
+
+        <!-- Layout -->
+        <main class="flex-1 flex relative overflow-hidden">
+
+            <!-- Sidebar -->
+            <aside id="sidebar"
+                class="absolute md:relative z-20 w-full md:w-80 h-full bg-slate-900 border-r border-slate-700 flex flex-col sidebar-transition transform -translate-x-full md:translate-x-0 shadow-2xl">
+                <!-- Tabs -->
+                <div class="flex border-b border-slate-700 bg-slate-800/50">
+                    <button id="tab-fleet" onclick="app.switchTab('fleet')"
+                        class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition tab-active flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">local_shipping</span> Flota (<span
+                            id="count-fleet">0</span>)
+                    </button>
+                    <button id="tab-drivers" onclick="app.switchTab('drivers')"
+                    class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    Choferes
+                    </button>
+                    <button id="tab-alerts" onclick="app.switchTab('alerts')"
+                        class="flex-1 py-4 text-sm font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">warning</span> Alertas
+                    </button>
+                </div>
+
+                <!-- Panel: Flota -->
+                <div id="panel-fleet" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    <!-- Lista generada por JS -->
+                </div>
+                <!-- Panel: Choferes -->
+                <div id="panel-drivers" class="hidden flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    <!-- Lista de choferes generada por JS -->
+                </div>
+
+                <!-- Panel: Alertas -->
+                <div id="panel-alerts" class="hidden flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    <button onclick="app.openModal('alert')"
+                        class="w-full bg-amber-500/10 border border-amber-500/50 text-amber-500 hover:bg-amber-500 hover:text-white p-3 rounded-lg flex items-center justify-center gap-2 text-sm transition font-bold mb-4 group">
+                        <span class="material-symbols-outlined group-hover:animate-ping">add_alert</span> NUEVA ALERTA
+                    </button>
+                    <div id="alert-list-content" class="space-y-3">
+                        <!-- Lista generada por JS -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Mapa -->
+            <div class="flex-1 relative bg-slate-800 w-full h-full">
+                <div id="map" class="w-full h-full block"></div>
+
+                <!-- NOTIFICATION CONTAINER (NUEVO) -->
+                <div id="notification-area" class="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none w-full max-w-md px-4">
+                    <!-- Las notificaciones se inyectarán aquí -->
+                </div>
+
+                <!-- Botón Reset Vista -->
+                <div class="absolute top-4 right-4 flex flex-col gap-2">
+                    <button onclick="app.resetView()"
+                        class="bg-slate-900 text-slate-300 p-3 rounded-lg shadow-xl border border-slate-700 hover:text-white hover:border-indigo-500 transition transform hover:scale-105">
+                        <span class="material-symbols-outlined">my_location</span>
+                    </button>
+                </div>
+
+                <!-- Tarjeta de Tracking (Flotante) -->
+                <div id="track-card"
+                    class="absolute bottom-6 left-4 right-4 md:left-auto md:right-4 md:w-80 bg-slate-900/95 backdrop-blur-md border border-slate-700 p-5 rounded-2xl shadow-2xl transform translate-y-[150%] transition-transform duration-300 z-10">
+                    <div class="flex justify-between items-start mb-4 border-b border-slate-700 pb-3">
+                        <div>
+                            <div class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-1">Unidad
+                                Monitoreada</div>
+                            <div id="card-plate" class="text-2xl font-bold font-tech text-white">---</div>
+                        </div>
+                        <button onclick="app.closeCard()" class="text-slate-500 hover:text-white"><span
+                                class="material-symbols-outlined">close</span></button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <div class="text-slate-500 text-[10px] uppercase font-bold">Conductor</div>
+                            <div id="card-driver" class="text-slate-200 truncate font-medium mt-1">---</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <div class="text-slate-500 text-[10px] uppercase font-bold">Velocidad</div>
+                            <div id="card-speed" class="text-green-400 font-mono font-bold mt-1">0 km/h</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mb-2 px-1 font-mono">
+                        <span id="card-from">ORIGEN</span>
+                        <span id="card-to">DESTINO</span>
+                    </div>
+                    <div class="h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="card-progress"
+                            class="h-full bg-indigo-500 w-0 transition-all duration-500 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: CARGAR TRANSPORTISTA -->
+        <div id="modal-driver"
+            class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-driver-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-indigo-600 p-5 flex justify-between items-center shadow-lg">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                <span class="material-symbols-outlined">badge</span> CARGAR TRANSPORTISTA
+            </h3>
+            <button onclick="app.closeModal('driver')" class="text-indigo-200 hover:text-white transition">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            </div>
+
+            <form onsubmit="app.submitDriver(event)" class="p-6 space-y-5">
+            <div class="space-y-4">
+                <!-- Nombre -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Nombre y apellido</label>
+                <div class="relative">
+                    <input type="text" name="driverName" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Juan Pérez">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">person</span>
+                </div>
+                </div>
+
+                <!-- DNI -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">DNI</label>
+                <div class="relative">
+                    <input type="text" name="dni" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="12345678">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">credit_card</span>
+                </div>
+                </div>
+                <!-- Licencia de conducir -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Licencia de conducir</label>
+                <div class="relative">
+                    <input type="text" name="license" required
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Clase, número, etc.">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">drive_eta</span>
+                </div>
+                </div>
+
+                <!-- Carnet de cargas peligrosas -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Carnet de cargas peligrosas</label>
+                <div class="relative">
+                    <input type="text" name="dangerCard"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Número / categoría (si corresponde)">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">warning</span>
+                </div>
+                </div>
+
+                <!-- Póliza de seguro / ART -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Póliza de seguro / ART</label>
+                <div class="relative">
+                    <input type="text" name="insurance"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none pl-10 transition"
+                        placeholder="Número de póliza / ART">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">policy</span>
+                </div>
+                </div>
+
+                <!-- Empresa (se completa desde login) -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Empresa</label>
+                <div class="relative">
+                    <input type="text" id="driver-company" name="company" required readonly
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white outline-none pl-10 transition"
+                        value="Empresa logueada">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">business</span>
+                </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                <button type="button" onclick="app.closeModal('driver')"
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                <button type="submit"
+                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg hover:shadow-indigo-500/30 transition transform active:scale-95">
+                GUARDAR TRANSPORTISTA
+                </button>
+            </div>
+            </form>
+        </div>
+        </div>
+
+        <!-- MODAL: CARGAR TRANSPORTE -->
+        <div id="modal-vehicle"
+            class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-vehicle-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-emerald-600 p-5 flex justify-between items-center shadow-lg">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                <span class="material-symbols-outlined">local_shipping</span> CARGAR TRANSPORTE
+            </h3>
+            <button onclick="app.closeModal('vehicle')" class="text-emerald-100 hover:text-white transition">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            </div>
+
+            <form onsubmit="app.submitVehicle(event)" class="p-6 space-y-5">
+            <div class="space-y-4">
+
+            <!--Seleccion de choferes-->
+            <div>
+            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Chofer</label>
+            <div class="relative">
+                <select name="driverId" id="select-driver"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none pl-10">
+                <!-- opciones se rellenan desde JS -->
+                </select>
+                <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">badge</span>
+            </div>
+            <p id="no-free-drivers" class="mt-1 text-[11px] text-amber-400 hidden">
+                No hay choferes libres. Cargá primero un transportista.
+            </p>
+            </div>
+
+
+                <!-- Patente -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Patente</label>
+                <div class="relative">
+                    <input type="text" name="plate" required placeholder="AA 123 BB"
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none font-mono uppercase tracking-widest pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">tag</span>
+                </div>
+                </div>
+
+                <!-- Modelo -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Modelo</label>
+                <div class="relative">
+                    <input type="text" name="model" required placeholder="FH 440, 1933, etc."
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">directions_bus</span>
+                </div>
+                </div>
+
+                <!-- Marca -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Marca</label>
+                <div class="relative">
+                    <input type="text" name="brand" required placeholder="Scania, Volvo, Iveco..."
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none pl-10 transition">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">local_shipping</span>
+                </div>
+                </div>
+
+                <!-- Tipo remolque -->
+                <div>
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Tipo de unidad</label>
+                <div class="relative">
+                    <select name="trailerType" required
+                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none pl-10">
+                    <option value="" disabled selected>Selecciona...</option>
+                    <option value="acoplado">Con acoplado</option>
+                    <option value="semirremolque">Con semirremolque</option>
+                    <option value="sin_remolque">Sin remolque</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">sync_alt</span>
+                </div>
+                </div>
+                
+                <!-- Origen y destino -->
+                    <div class="grid grid-cols-2 gap-4 mt-2">
+                    <!-- Punto Origen -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                        Punto Origen
+                        </label>
+                        <select name="startLocation" id="select-start-vehicle"
+                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none">
+                                                    <option value="" disabled selected>Selecciona...</option>
+
+                        <option value="jujuy">S.S. de Jujuy</option>
+                        <option value="yala">Yala</option>
+                        <option value="volcan">Volcán</option>
+                        <option value="purmamarca">Purmamarca</option>
+                        <option value="lipan">Cuesta de Lipán</option>
+                        <option value="salinas">Salinas Grandes</option>
+                        <option value="susques">Susques</option>
+                        <option value="jama">Paso de Jama</option>
+                        </select>
+                    </div>
+
+                    <!-- Destino -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                        Destino
+                        </label>
+                        <select name="direction"
+                                class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-emerald-500 outline-none cursor-pointer transition appearance-none">
+                                                    <option value="" disabled selected>Selecciona...</option>
+
+                        <option value="asc">Hacia Frontera (Chile)</option>
+                        <option value="desc">Hacia Capital (Jujuy)</option>
+                        </select>
+                    </div>
+                    </div>
+                <!-- Archivos -->
+                <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    Título (imagen o archivo)
+                    </label>
+                    <input type="file" name="titleFile" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    RTV (imagen o archivo)
+                    </label>
+                    <input type="file" name="rtvFile" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                    Póliza de seguro (imagen o archivo)
+                    </label>
+                    <input type="file" name="insuranceFile" accept="image/*,.pdf,.doc,.docx"
+                        class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 bg-slate-800 border border-slate-600 rounded-lg cursor-pointer" />
+                </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                <button type="button" onclick="app.closeModal('vehicle')"
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                <button type="submit"
+                        class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg shadow-lg hover:shadow-emerald-500/30 transition transform active:scale-95">
+                GUARDAR TRANSPORTE
+                </button>
+            </div>
+            </form>
+        </div>
+        </div>
+
+
+    <!-- MODAL: ALERTA -->
+    <div id="modal-alert"
+        class="fixed inset-0 z-[80] hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="modal-alert-content"
+            class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+            <div class="bg-amber-600 p-5 flex justify-between items-center shadow-lg">
+                <h3 class="text-white font-bold text-lg flex items-center gap-2 font-tech tracking-wide">
+                    <span class="material-symbols-outlined">warning</span> REPORTAR INCIDENTE
+                </h3>
+                <button onclick="app.closeModal('alert')" class="text-amber-100 hover:text-white transition"><span
+                        class="material-symbols-outlined">close</span></button>
+            </div>
+            <form onsubmit="app.submitAlert(event)" class="p-6 space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Tipo de
+                        Incidente</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="caution" checked="" class="peer hidden">
+                            <div
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-amber-600/20 peer-checked:border-amber-500 peer-checked:text-amber-400 transition">
+                                <span class="material-symbols-outlined block text-2xl mb-1">wb_sunny</span>
+                                <span class="text-[10px] font-bold">CLIMA</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="accident" class="peer hidden">
+                            <div
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-red-600/20 peer-checked:border-red-500 peer-checked:text-red-400 transition">
+                                <span class="material-symbols-outlined block text-2xl mb-1">car_crash</span>
+                                <span class="text-[10px] font-bold">CHOQUE</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="type" value="police" class="peer hidden">
+                            <div
+                                class="border border-slate-600 rounded-lg p-2 text-center text-slate-400 hover:bg-slate-800 peer-checked:bg-blue-600/20 peer-checked:border-blue-500 peer-checked:text-blue-400 transition">
+                                <span class="material-symbols-outlined block text-2xl mb-1">local_police</span>
+                                <span class="text-[10px] font-bold">CONTROL</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Ubicación
+                        Aproximada</label>
+                    <div class="relative">
+                        <select id="select-alert-loc" name="location"
+                            class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-amber-500 outline-none cursor-pointer transition appearance-none pl-10">
+                            <option value="jujuy">S.S. de Jujuy</option>
+                            <option value="yala">Yala</option>
+                            <option value="volcan">Volcán</option>
+                            <option value="purmamarca">Purmamarca</option>
+                            <option value="lipan">Cuesta de Lipán</option>
+                            <option value="salinas">Salinas Grandes</option>
+                            <option value="susques">Susques</option>
+                            <option value="jama">Paso de Jama</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute left-3 top-3 text-slate-500">place</span>
+                    </div>
+                </div>
+                <div>
+                    <label
+                        class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Descripción</label>
+                    <textarea name="desc" rows="3" placeholder="Detalles..."
+                        class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-white focus:border-amber-500 outline-none resize-none transition"></textarea>
+                </div>
+                <div class="pt-4 flex gap-3 border-t border-slate-700 mt-2">
+                    <button type="button" onclick="app.closeModal('alert')"
+                        class="flex-1 py-3 text-slate-400 hover:bg-slate-800 rounded-lg font-bold transition">CANCELAR</button>
+                    <button type="submit"
+                        class="flex-1 py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg shadow-lg hover:shadow-amber-500/30 transition transform active:scale-95">ENVIAR
+                        REPORTE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* === CONFIGURACIÓN Y NODOS === */
+        const CONFIG = {
+            center: { lat: -23.7, lng: -65.9 },
+            zoom: 9,
+            simSpeed: 0.08, // Velocidad REDUCIDA para movimiento más lento y realista
+            routeFallback: false, // Se activa si falla la API de Directions
+            alertRadius: 0.05 // Aprox 5-6 km en grados lat/lon para detección
+        };
+
+        const NODES = [
+            { id: 'jujuy', name: 'S.S. de Jujuy', lat: -24.1858, lng: -65.2995 },
+            { id: 'yala', name: 'Yala', lat: -24.1189, lng: -65.4055 },
+            { id: 'volcan', name: 'Volcán', lat: -23.9167, lng: -65.4667 },
+            { id: 'purmamarca', name: 'Purmamarca', lat: -23.7483, lng: -65.4923 },
+            { id: 'lipan', name: 'Cuesta de Lipán', lat: -23.6882, lng: -65.6460 },
+            { id: 'salinas', name: 'Salinas Grandes', lat: -23.6196, lng: -65.8576 },
+            { id: 'susques', name: 'Susques', lat: -23.4038, lng: -66.3664 },
+            { id: 'jama', name: 'Paso de Jama', lat: -23.2375, lng: -67.0764 }
+        ];
+
+        /* === ESTADO APLICACIÓN === */
+        const state = {
+            map: null,
+            google: null,
+            directionsService: null,
+            routePath: [], // Array de LatLngs reales de la carretera
+            transports: [],
+            alerts: [],
+            markers: {}, // ID -> Marker
+            selectedId: null
+        };
+        const drivers = []; // cada elemento será { id, dni, name, license, dangerCard, insurance, company }
+
+        //Se le asigna un rol dependiendo el botón que aprete el usuario
+        const session = {
+            role: null // 'guest' | 'company'
+        };
+
+        /* === CONTROLADOR === */
+        const app = {
+            
+            // 1. INIT
+            init: () => {
+                setTimeout(() => {
+                    const status = document.getElementById('status-api');
+                    if (status) {
+                        status.innerText = "READY";
+                        status.className = "text-green-500 font-bold animate-none";
+                        const btn = document.getElementById('btn-enter');
+                        btn.disabled = false;
+                        btn.classList.remove('cursor-wait');
+                        btn.classList.add('cursor-pointer', 'animate-pulse');
+                    }
+                }, 1500);
+
+                app.renderDropdowns();
+                app.startClock();
+            },
+
+            // 2. INGRESAR
+            enterSystem: async () => {
+                const btn = document.getElementById('btn-enter');
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> CONECTANDO SATÉLITE...';
+
+                try {
+                    await app.initMap();
+                    // Intentar cargar ruta real antes de empezar
+                    await app.calculateRealRoute();
+                    
+                    app.initData();
+                    app.startSimulation();
+
+                    const splash = document.getElementById('splash-screen');
+                    const main = document.getElementById('app-container');
+                    splash.style.opacity = '0';
+                    main.classList.remove('opacity-0');
+                    setTimeout(() => splash.style.display = 'none', 800);
+                } catch (error) {
+                    console.error("Error crítico:", error);
+                    btn.innerText = "ERROR DE SISTEMA";
+                    btn.classList.add('bg-red-600');
+                }
+            },
+            
+            //ingresar como invitado
+            enterAsGuest: async () => {
+                session.role = 'guest';
+
+                const btn = document.getElementById('btn-enter');
+                if (btn) {
+                    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> INICIANDO VISTA INVITADO...';
+                    btn.disabled = true;
+                    btn.classList.remove('animate-pulse');
+                }
+
+                try {
+                    await app.initMap();
+                    await app.calculateRealRoute();
+                    app.initData();
+                    app.startSimulation();
+
+                    const splash = document.getElementById('splash-screen');
+                    const main = document.getElementById('app-container');
+                    if (splash && main) {
+                        splash.style.opacity = '0';
+                        main.classList.remove('opacity-0');
+                        setTimeout(() => splash.style.display = 'none', 800);
+                    }
+
+                    app.configureGuestUI();
+                } catch (error) {
+                    console.error('Error crítico invitado:', error);
+                    if (btn) {
+                        btn.innerText = 'ERROR DE SISTEMA';
+                        btn.classList.add('bg-red-600');
+                        btn.disabled = false;
+                    }
+                }
+            },
+
+            configureGuestUI: () => {
+                // Ocultar botones de carga (tienen clase company-only en la navbar)
+                document.querySelectorAll('.company-only').forEach(el => {
+                    el.classList.add('hidden');
+                });
+
+                // Opcional: si quieres ocultar también pestaña "Choferes" completa
+                const tabDrivers = document.getElementById('tab-drivers');
+                const panelDrivers = document.getElementById('panel-drivers');
+                if (tabDrivers) tabDrivers.classList.add('hidden');
+                if (panelDrivers) panelDrivers.classList.add('hidden');
+
+                // Forzar que la pestaña activa sea Flota o Alertas (por ejemplo Alertas)
+                app.switchTab('alerts');
+            },
+            //ingresar como empresa
+            // Mostrar pantalla de login empresa
+            showCompanyLogin() {
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                    const loginScreen = document.getElementById('login-screen');
+                    loginScreen.classList.remove('hidden');
+                    loginScreen.classList.add('flex');
+                    setTimeout(() => loginScreen.style.opacity = '1', 50);
+                }, 700);
+    },
+
+    // Volver al splash
+    backToSplash() {
+        document.getElementById('login-error').classList.add('hidden');
+        document.getElementById('login-screen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('flex');
+            const splash = document.getElementById('splash-screen');
+            splash.style.display = 'flex';
+            setTimeout(() => splash.style.opacity = '1', 50);
+        }, 700);
+    },
+
+    // Procesar login empresa
+    loginCompany(event) {
+        event.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('login-error');
+
+        // Aquí puedes validar contra tu backend
+        // Por ahora, simulamos una validación simple
+        if (username && password) {
+            // Login exitoso
+            console.log('Login exitoso:', username);
+            document.getElementById('login-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-screen').classList.add('hidden');
+                // Aquí va tu código para mostrar la vista de empresa
+                console.log('Ingresando al sistema como empresa...');
+                app.enterSystem()
+            }, 700);
+        } else {
+            // Mostrar error
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => errorDiv.classList.add('hidden'), 3000);
+        }
+    },
+
+            populateDriverSelect: () => {
+            const select = document.getElementById('select-driver');
+            const warning = document.getElementById('no-free-drivers');
+            if (!select) return;
+
+            select.innerHTML = '';
+
+            const freeDrivers = drivers.filter(d => !d.assigned);
+
+            if (freeDrivers.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'Sin choferes disponibles';
+                opt.disabled = true;
+                opt.selected = true;
+                select.appendChild(opt);
+                if (warning) warning.classList.remove('hidden');
+            } else {
+                if (warning) warning.classList.add('hidden');
+
+                const optDefault = document.createElement('option');
+                optDefault.value = '';
+                optDefault.textContent = 'Selecciona un chofer...';
+                optDefault.disabled = true;
+                optDefault.selected = true;
+                select.appendChild(optDefault);
+
+                freeDrivers.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = `${d.name} (${d.dni})`;
+                    select.appendChild(opt);
+                });
+            }
+        },
+
+
+            // 3. MAPA
+            initMap: async () => {
+                const { Map, Polyline } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+                const { DirectionsService } = await google.maps.importLibrary("routes");
+
+                state.google = { Map, Polyline, AdvancedMarkerElement, PinElement, DirectionsService };
+                state.directionsService = new DirectionsService();
+
+                state.map = new Map(document.getElementById("map"), {
+                    center: CONFIG.center,
+                    zoom: CONFIG.zoom,
+                    mapId: 'DEMO_MAP_ID',
+                    disableDefaultUI: true,
+                    gestureHandling: 'greedy',
+                    mapTypeId: 'terrain',
+                    backgroundColor: '#1e293b'
+                });
+
+                // Marcadores de Ciudades
+                NODES.forEach(n => {
+                    const pin = new PinElement({ scale: 0.6, background: '#334155', borderColor: '#475569', glyph: '' });
+                    new AdvancedMarkerElement({
+                        map: state.map,
+                        position: { lat: n.lat, lng: n.lng },
+                        content: pin.element,
+                        title: n.name
+                    });
+                });
+            },
+
+            // 4. CÁLCULO DE RUTA REAL (NUEVO)
+            calculateRealRoute: () => {
+                return new Promise((resolve) => {
+                    const request = {
+                        origin: NODES[0], // Jujuy
+                        destination: NODES[NODES.length - 1], // Jama
+                        travelMode: 'DRIVING'
+                    };
+
+                    state.directionsService.route(request, (result, status) => {
+                        if (status === 'OK') {
+                            // Guardamos todos los puntos de la ruta
+                            state.routePath = result.routes[0].overview_path;
+                            
+                            // Dibujar la ruta real
+                            new state.google.Polyline({
+                                path: state.routePath,
+                                geodesic: true,
+                                strokeColor: "#6366f1",
+                                strokeOpacity: 0.8,
+                                strokeWeight: 4,
+                                map: state.map
+                            });
+
+                            // Mapear cada nodo a su índice más cercano en la ruta real
+                            // Esto nos permite saber en qué "kilómetro" está cada ciudad
+                            NODES.forEach(node => {
+                                let minDst = Infinity;
+                                let closestIdx = 0;
+                                const nLat = node.lat;
+                                const nLng = node.lng;
+
+                                state.routePath.forEach((p, i) => {
+                                    // Distancia euclidiana simple (suficiente para este zoom)
+                                    const d = Math.sqrt(Math.pow(p.lat() - nLat, 2) + Math.pow(p.lng() - nLng, 2));
+                                    if (d < minDst) {
+                                        minDst = d;
+                                        closestIdx = i;
+                                    }
+                                });
+                                node.pathIndex = closestIdx;
+                            });
+
+                            console.log("Ruta real cargada:", state.routePath.length, "puntos");
+                        } else {
+                            console.warn("Fallo Directions API, usando modo fallback lineal");
+                            CONFIG.routeFallback = true;
+                            // Dibujar línea recta como fallback
+                             new state.google.Polyline({
+                                path: NODES.map(n => ({ lat: n.lat, lng: n.lng })),
+                                strokeColor: "#6366f1",
+                                strokeOpacity: 0.5,
+                                strokeWeight: 4,
+                                map: state.map
+                            });
+                        }
+                        resolve();
+                    });
+                });
+            },
+
+            // 5. DATA INICIAL
+            initData: () => {
+                app.createTransport({ plate: "AD 440 JK", company: "TransNOA", driver: "Carlos M.", startLocation: "purmamarca", direction: "asc" });
+                app.createTransport({ plate: "AE 112 BB", company: "Logística Jujuy", driver: "Roberto S.", startLocation: "susques", direction: "desc" });
+                app.createTransport({ plate: "AF 990 ZZ", company: "Redpack", driver: "Juan P.", startLocation: "jujuy", direction: "asc" });
+
+                const alert = { id: 1, type: 'caution', title: 'Viento Blanco', desc: 'Visibilidad reducida en zona de frontera.', location: 'jama' };
+                state.alerts.push(alert);
+                app.renderAlertList();
+                app.createAlertMarker(alert);
+                app.renderFleetList();
+                app.renderDriverList();
+            },
+
+            // 6. LOGICA TRANSPORTE (ACTUALIZADA)
+            createTransport: (data) => {
+                const startNode = NODES.find(n => n.id === data.startLocation);
+                if (!startNode) return;
+
+                let currentPathIdx = 0;
+                let endPathIdx = 0;
+
+                if (!CONFIG.routeFallback) {
+                    // MODO RUTA REAL
+                    currentPathIdx = startNode.pathIndex;
+                    // Si va ascendente (a Chile), el fin es el último punto del array
+                    // Si va descendente (a Jujuy), el fin es el índice 0
+                    endPathIdx = data.direction === 'asc' ? state.routePath.length - 1 : 0;
+                } else {
+                    // MODO FALLBACK (Lógica anterior basada en índices de NODES)
+                    currentPathIdx = NODES.findIndex(n => n.id === data.startLocation);
+                    endPathIdx = data.direction === 'asc' ? NODES.length - 1 : 0;
+                }
+
+                const t = {
+                    id: Date.now() + Math.random(),
+                    ...data,
+                    currentPathIdx: currentPathIdx,
+                    targetPathIdx: endPathIdx,
+                    speed: (CONFIG.simSpeed + (Math.random() * 0.05)) * (data.direction === 'asc' ? 1 : -1), // Velocidad positiva o negativa
+                    lat: startNode.lat,
+                    lng: startNode.lng,
+                    lastNodeName: startNode.name,
+                    notifiedAlerts: new Set() // Para no repetir notificaciones
+                };
+
+                state.transports.push(t);
+                app.addTransportMarker(t);
+            },
+
+            addTransportMarker: (t) => {
+                const el = document.createElement('div');
+                el.className = "group relative cursor-pointer";
+                el.innerHTML = `
+                    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded border border-slate-600 opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20 shadow-lg pointer-events-none font-bold tracking-wider">
+                        ${t.plate}
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-indigo-600 border-2 border-white shadow-[0_0_15px_rgba(99,102,241,0.6)] flex items-center justify-center transform transition hover:scale-110 active:scale-95">
+                        <span class="material-symbols-outlined text-white text-lg">local_shipping</span>
+                    </div>
+                `;
+                el.onclick = (e) => { e.stopPropagation(); app.selectTransport(t.id); };
+
+                const marker = new state.google.AdvancedMarkerElement({
+                    map: state.map,
+                    position: { lat: t.lat, lng: t.lng },
+                    content: el,
+                    title: t.plate,
+                    zIndex: 100
+                });
+                state.markers[t.id] = marker;
+            },
+
+            // 7. SIMULACIÓN (ACTUALIZADA con PROXIMIDAD)
+            startSimulation: () => {
+                setInterval(() => {
+                    state.transports.forEach(t => {
+                        
+                        // Lógica de movimiento (existente)
+                        if (!CONFIG.routeFallback) {
+                            if ((t.direction === 'asc' && t.currentPathIdx >= t.targetPathIdx) ||
+                                (t.direction === 'desc' && t.currentPathIdx <= t.targetPathIdx)) {
+                                return; 
+                            }
+                            t.currentPathIdx += t.speed;
+                            const pIdx = Math.floor(t.currentPathIdx);
+                            if (pIdx >= 0 && pIdx < state.routePath.length) {
+                                const point = state.routePath[pIdx];
+                                t.lat = point.lat();
+                                t.lng = point.lng();
+                                NODES.forEach(n => {
+                                    if (Math.abs(n.pathIndex - pIdx) < 20) t.lastNodeName = n.name; 
+                                });
+                            }
+                        }
+
+                        // === NUEVO: CHECK PROXIMIDAD DE ALERTAS ===
+                        app.checkProximity(t);
+
+                        // Actualizar Marker en Mapa
+                        if (state.markers[t.id]) {
+                            state.markers[t.id].position = { lat: t.lat, lng: t.lng };
+                        }
+
+                        // Actualizar UI si está seleccionado
+                        if (state.selectedId === t.id) app.updateCard(t);
+                    });
+                }, 50); 
+            },
+        
+            openModal: (type) => {
+                // type: 'driver' | 'vehicle' | 'alert' | 'transport'
+                let id = type;
+
+                // compatibilidad con código viejo
+                if (type === 'transport') id = 'vehicle';
+
+                // si abrimos transporte, rellenar choferes libres
+                if (id === 'vehicle') {
+                    app.populateDriverSelect();
+                }
+
+                const modal = document.getElementById(`modal-${id}`);
+                const content = document.getElementById(`modal-${id}-content`);
+                if (!modal || !content) return;
+
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('opacity-0', 'scale-95');
+                    content.classList.add('opacity-100', 'scale-100');
+                }, 20);
+            },
+
+            closeModal: (type) => {
+                let id = type;
+                if (type === 'transport') id = 'vehicle';
+
+                const modal = document.getElementById(`modal-${id}`);
+                const content = document.getElementById(`modal-${id}-content`);
+                if (!modal || !content) return;
+
+                content.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 200);
+            },
+
+            submitDriver: (event) => {
+                event.preventDefault();
+                const form = event.target;
+
+                const driver = {
+                    id: Date.now(),
+                    name: form.driverName.value.trim(),
+                    dni: form.dni.value.trim(),
+                    license: form.license.value.trim(),
+                    dangerCard: form.dangerCard.value.trim(),
+                    insurance: form.insurance.value.trim(),
+                    company: form.company.value.trim(),
+                    assigned: false // importante: todavía sin transporte
+                };
+
+                drivers.push(driver);
+                app.closeModal('driver');
+                app.renderDriverList();
+            },
+
+            submitVehicle: (event) => {
+                event.preventDefault();
+                const form = event.target;
+
+                const driverId = form.driverId.value;
+                const driver = drivers.find(d => d.id.toString() === driverId);
+
+                if (!driver) {
+                    alert('Selecciona un chofer disponible.');
+                    return;
+                }
+
+                const data = {
+                    plate: form.plate.value.trim(),
+                    model: form.model.value.trim(),
+                    brand: form.brand.value.trim(),
+                    trailerType: form.trailerType.value,
+                    driver: driver.name,
+                    company: driver.company || 'Empresa',
+                    startLocation: form.startLocation.value,
+                    direction: form.direction.value
+                };
+
+                // Crear transporte en la simulación
+                app.createTransport(data);
+
+                // Marcar chofer como asignado
+                driver.assigned = true;
+
+                // ACTUALIZAR PANELES
+                app.renderFleetList();     // muestra el nuevo camión en "Flota"
+                app.renderDriverList();    // actualiza la lista de choferes
+
+                // Cerrar modal y limpiar
+                app.closeModal('vehicle');
+                form.reset();
+            },
+
+            // === NUEVAS FUNCIONES DE NOTIFICACIÓN ===
+            
+            checkProximity: (t) => {
+                state.alerts.forEach(alert => {
+                    // Verificar si ya fue notificado de esta alerta específica
+                    if(t.notifiedAlerts.has(alert.id)) return;
+
+                    const alertNode = NODES.find(n => n.id === alert.location);
+                    if(!alertNode) return;
+
+                    // Distancia simple (pitágoras) porque las coord son cercanas
+                    const dist = Math.sqrt(Math.pow(t.lat - alertNode.lat, 2) + Math.pow(t.lng - alertNode.lng, 2));
+
+                    if(dist < CONFIG.alertRadius) {
+                        t.notifiedAlerts.add(alert.id); // Marcar como notificado
+                        app.showNotification(t, alert);
+                    }
+                });
+            },
+
+            showNotification: (t, alert) => {
+                const container = document.getElementById('notification-area');
+                const id = 'toast-' + Date.now();
+                
+                const colorClass = alert.type === 'accident' ? 'bg-red-500' : (alert.type === 'police' ? 'bg-blue-500' : 'bg-amber-500');
+                const icon = alert.type === 'accident' ? 'car_crash' : (alert.type === 'police' ? 'local_police' : 'warning');
+
+                const toast = document.createElement('div');
+                toast.className = `w-full bg-slate-900 border-l-4 ${colorClass.replace('bg-', 'border-')} shadow-2xl rounded-r-lg p-4 flex items-center gap-4 toast-enter pointer-events-auto`;
+                toast.innerHTML = `
+                    <div class="rounded-full p-2 bg-slate-800 ${colorClass.replace('bg-', 'text-')}">
+                        <span class="material-symbols-outlined animate-pulse">${icon}</span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-[15px] text-slate-400 font-bold uppercase tracking-widest flex justify-between">
+                            <span>PROXIMIDAD DETECTADA</span>
+                            <span>${t.plate}</span>
+                        </div>
+                        <div class="font-bold text-white text-sm leading-tight mt-1">
+                            ${alert.title} en zona próxima
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(toast);
+
+                // Animación de entrada
+                requestAnimationFrame(() => {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-enter-active');
+                });
+
+                // Sonido simple (opcional, solo beep de consola visual)
+                console.log("BEEP: Alerta de proximidad para " + t.plate);
+
+                // Remover después de 5 segundos
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter-active');
+                    toast.classList.add('toast-exit-active');
+                    setTimeout(() => toast.remove(), 500); // Esperar animación
+                }, 5000);
+            },
+
+
+            renderDriverList: () => {
+                const container = document.getElementById('panel-drivers');
+                const counter = document.getElementById('count-drivers');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                const mapDrivers = new Map();
+
+                // 1) desde transports precargados y nuevos
+                state.transports.forEach(t => {
+                    if (!t.driver) return;
+                    const name = t.driver.trim();
+                    if (!name) return;
+                    if (!mapDrivers.has(name)) {
+                        mapDrivers.set(name, { name, fromTransports: [], fromForm: null });
+                    }
+                    mapDrivers.get(name).fromTransports.push(t);
+                });
+
+                // 2) desde formulario de transportistas
+                drivers.forEach(d => {
+                    const name = d.name || d.dni;
+                    if (!mapDrivers.has(name)) {
+                        mapDrivers.set(name, { name, fromTransports: [], fromForm: d });
+                    } else {
+                        mapDrivers.get(name).fromForm = d;
+                    }
+                });
+
+                const list = Array.from(mapDrivers.values());
+                if (counter) counter.textContent = list.length.toString();
+
+                list.forEach(d => {
+                    const plates = d.fromTransports.map(t => t.plate).join(' · ') || 'Sin unidades asignadas';
+                    const initials = d.name.split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase();
+
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-900/60 border border-slate-700 rounded-xl p-3 flex items-center gap-3 hover:border-indigo-500 transition cursor-pointer';
+
+                    card.innerHTML = `
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-xs font-bold text-slate-300">
+                            ${initials}
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-slate-100">${d.name}</div>
+                            <div class="text-[11px] text-slate-400 uppercase tracking-wider">
+                                ${plates}
+                            </div>
+                        </div>
+                    `;
+
+                    if (d.fromTransports.length > 0) {
+                        const first = d.fromTransports[0];
+                        card.onclick = () => {
+                            app.selectTransport(first.id);
+                            app.switchTab('fleet');
+                        };
+                    }
+
+                    container.appendChild(card);
+                });
+            },
+
+            // 8. INTERACCIÓN UI
+            selectTransport: (id) => {
+                state.selectedId = id;
+                const t = state.transports.find(x => x.id === id);
+                if (!t) return;
+                state.map.panTo({ lat: t.lat, lng: t.lng });
+                const card = document.getElementById('track-card');
+                card.classList.remove('translate-y-[150%]');
+                app.updateCard(t);
+            },
+
+            updateCard: (t) => {
+                document.getElementById('card-plate').innerText = t.plate;
+                document.getElementById('card-driver').innerText = t.driver;
+                document.getElementById('card-speed').innerText = Math.abs(Math.floor(t.speed * 120)) + " km/h"; // Simulando velocidad visual
+                document.getElementById('card-from').innerText = t.lastNodeName || "EN RUTA"; 
+                
+                // Calcular destino nombre
+                const destName = t.direction === 'asc' ? 'CHILE (Frontera)' : 'JUJUY (Capital)';
+                document.getElementById('card-to').innerText = destName;
+
+                // Barra de progreso aproximada
+                let pct = 0;
+                if(!CONFIG.routeFallback) {
+                    pct = (t.currentPathIdx / state.routePath.length) * 100;
+                    if(t.direction === 'desc') pct = 100 - pct; // Invertir barra si baja
+                }
+                document.getElementById('card-progress').style.width = Math.min(Math.max(pct, 0), 100) + "%";
+            },
+
+            closeCard: () => {
+                state.selectedId = null;
+                document.getElementById('track-card').classList.add('translate-y-[150%]');
+            },
+
+            submitTransport: (e) => {
+                e.preventDefault();
+                // Modificado para unir nombre y apellido
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                data.driver = `${data.driverName} ${data.driverSurname}`; // Unir campos
+                
+                app.createTransport(data);
+                app.renderFleetList();
+                app.closeModal('transport');
+                app.switchTab('fleet');
+                e.target.reset();
+            },
+
+            submitAlert: (e) => {
+                e.preventDefault();
+                const data = Object.fromEntries(new FormData(e.target));
+                const titles = { caution: 'Precaución', accident: 'Accidente', police: 'Control' };
+                const alert = { id: Date.now(), ...data, title: titles[data.type] };
+                state.alerts.unshift(alert);
+                app.createAlertMarker(alert);
+                app.renderAlertList();
+                app.closeModal('alert');
+                app.switchTab('alerts');
+                e.target.reset();
+            },
+
+            createAlertMarker: (a) => {
+                const el = document.createElement('div');
+                const color = a.type === 'accident' ? 'text-red-500' : (a.type === 'police' ? 'text-blue-500' : 'text-amber-500');
+                const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'police' ? 'local_police' : 'warning');
+                el.innerHTML = `<span class="material-symbols-outlined ${color} text-3xl drop-shadow-md animate-bounce">${icon}</span>`;
+
+                const loc = NODES.find(n => n.id === a.location);
+                if (loc) {
+                    new state.google.AdvancedMarkerElement({
+                        map: state.map,
+                        position: { lat: loc.lat + 0.005, lng: loc.lng },
+                        content: el,
+                        title: a.title
+                    });
+                }
+            },
+
+            renderFleetList: () => {
+                const list = document.getElementById('panel-fleet');
+                document.getElementById('count-fleet').innerText = state.transports.length;
+                list.innerHTML = state.transports.map(t => `
+                    <div onclick="app.selectTransport(${t.id})" class="bg-slate-800 p-3 rounded-lg border border-slate-700 hover:border-indigo-500 cursor-pointer transition flex justify-between items-center group mb-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded bg-slate-900 flex items-center justify-center text-slate-400 font-bold text-xs border border-slate-600 font-mono shadow-inner">${t.plate.substring(0, 2)}</div>
+                            <div>
+                                <div class="font-bold text-slate-200 text-sm group-hover:text-indigo-400 font-mono tracking-wide transition">${t.plate}</div>
+                                <div class="text-[10px] text-slate-500 uppercase">${t.company}</div>
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-green-400 bg-green-900/20 px-2 py-0.5 rounded border border-green-900/50 font-bold flex items-center gap-1">
+                            <div class="live-dot w-1.5 h-1.5 bg-green-500"></div> RUTA 9/52
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            renderAlertList: () => {
+                const list = document.getElementById('alert-list-content');
+                list.innerHTML = state.alerts.map(a => {
+                    const loc = NODES.find(n => n.id === a.location)?.name || 'Ruta';
+                    const color = a.type === 'accident' ? 'red' : (a.type === 'police' ? 'blue' : 'amber');
+                    const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'police' ? 'local_police' : 'warning');
+                    return `
+                    <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-${color}-500 mb-2 cursor-pointer hover:bg-slate-750 transition shadow-sm group">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="text-${color}-500 text-sm font-bold flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">${icon}</span> ${a.title}
+                            </h4>
+                            <span class="text-[10px] text-slate-500 uppercase">AHORA</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-2 group-hover:text-white">${a.desc}</p>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold bg-slate-900/50 p-1 px-2 rounded w-fit flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[10px]">location_on</span> ${loc}
+                        </div>
+                    </div>`;
+                }).join('');
+            },
+
+            renderDropdowns: () => {
+                const opts = NODES.map(n => `<option value="${n.id}">${n.name}</option>`).join('');
+                document.getElementById('select-start').innerHTML = opts;
+                document.getElementById('select-alert-loc').innerHTML = opts;
+            },
+
+            startClock: () => setInterval(() => {
+                const now = new Date();
+                document.getElementById('clock').innerText = now.toLocaleTimeString('es-AR');
+            }, 1000),
+
+            toggleSidebar: () => document.getElementById('sidebar').classList.toggle('-translate-x-full'),
+
+            switchTab: (tab) => {
+                const btnFleet = document.getElementById('tab-fleet');
+                const btnDrivers = document.getElementById('tab-drivers');
+                const btnAlerts = document.getElementById('tab-alerts');
+
+                const panelFleet = document.getElementById('panel-fleet');
+                const panelDrivers = document.getElementById('panel-drivers');
+                const panelAlerts = document.getElementById('panel-alerts');
+
+                [btnFleet, btnDrivers, btnAlerts].forEach(b => b && b.classList.remove('tab-active'));
+                [panelFleet, panelDrivers, panelAlerts].forEach(p => p && p.classList.add('hidden'));
+
+                if (tab === 'fleet') {
+                    btnFleet && btnFleet.classList.add('tab-active');
+                    panelFleet && panelFleet.classList.remove('hidden');
+                } else if (tab === 'drivers') {
+                    btnDrivers && btnDrivers.classList.add('tab-active');
+                    panelDrivers && panelDrivers.classList.remove('hidden');
+                    app.renderDriverList(); // ← aquí también
+                } else if (tab === 'alerts') {
+                    btnAlerts && btnAlerts.classList.add('tab-active');
+                    panelAlerts && panelAlerts.classList.remove('hidden');
+                }
+            },
+
+
+            resetView: () => state.map && (state.map.setCenter(CONFIG.center), state.map.setZoom(CONFIG.zoom))
+        };
+
+        // Iniciar al Cargar
+        document.addEventListener('DOMContentLoaded', app.init);
+
+
+        
+
+
+    </script>
+
+</body>
+

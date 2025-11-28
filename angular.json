@@ -40,7 +40,9 @@
             "styles": [
               "src/scss/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "src/assets/app.js"
+            ],
             "allowedCommonJsDependencies": [],
             "stylePreprocessorOptions": {
               "sass": {
