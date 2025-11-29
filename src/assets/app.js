@@ -2,7 +2,7 @@
 const CONFIG = {
     center: { lat: -23.7, lng: -65.9 },
     zoom: 9,
-    simSpeed: 0.08, // Velocidad REDUCIDA para movimiento más lento y realista
+    simSpeed: 0.05, // Velocidad REDUCIDA para movimiento más lento y realista
     routeFallback: false, // Se activa si falla la API de Directions
     alertRadius: 0.05 // Aprox 5-6 km en grados lat/lon para detección
 };
@@ -27,14 +27,19 @@ const usuario_transportista = {
 }
 
 const NODES = [
-    { id: 'jujuy', name: 'S.S. de Jujuy', lat: -24.1858, lng: -65.2995 },
-    { id: 'yala', name: 'Yala', lat: -24.1189, lng: -65.4055 },
-    { id: 'volcan', name: 'Volcán', lat: -23.9167, lng: -65.4667 },
-    { id: 'purmamarca', name: 'Purmamarca', lat: -23.7483, lng: -65.4923 },
-    { id: 'lipan', name: 'Cuesta de Lipán', lat: -23.6882, lng: -65.6460 },
-    { id: 'salinas', name: 'Salinas Grandes', lat: -23.6196, lng: -65.8576 },
+    { id: 'jama', name: 'Paso de Jama', lat: -23.2375, lng: -67.0764 },
     { id: 'susques', name: 'Susques', lat: -23.4038, lng: -66.3664 },
-    { id: 'jama', name: 'Paso de Jama', lat: -23.2375, lng: -67.0764 }
+    { id: 'salinas', name: 'Salinas Grandes', lat: -23.6196, lng: -65.8576 },
+    { id: 'lipan', name: 'Cuesta de Lipán', lat: -23.6882, lng: -65.6460 },
+    { id: 'purmamarca', name: 'Purmamarca', lat: -23.7483, lng: -65.4923 },
+    { id: 'volcan', name: 'Volcán', lat: -23.9167, lng: -65.4667 },
+    { id: 'yala', name: 'Yala', lat: -24.1189, lng: -65.4055 },
+    { id: 'jujuy', name: 'S.S. de Jujuy', lat: -24.1858, lng: -65.2995 },
+    { id: 'perico', name: 'Acceso Sur (Perico)', lat: -24.3687, lng: -65.1037 },
+    { id: 'san_pedro', name: 'San Pedro de Jujuy', lat: -24.2270, lng: -64.8687 },
+    { id: 'libertador', name: 'Libertador Gral. San Martín', lat: -23.8138, lng: -64.7923 },
+    { id: 'yuto', name: 'Yuto', lat: -23.6394, lng: -64.4727 },
+    { id: 'limite_salta', name: 'Límite con Salta', lat: -23.5186, lng: -64.4048 }
 ];
 
 /* === ESTADO APLICACIÓN === */
@@ -57,7 +62,7 @@ const session = {
 
 /* === CONTROLADOR === */
 window.app = {
-    
+
     // 1. INIT
     init: () => {
         setTimeout(() => {
@@ -70,7 +75,7 @@ window.app = {
                 btn.classList.remove('cursor-wait');
                 btn.classList.add('cursor-pointer', 'animate-pulse');
             }
-   
+
         }, 1500);
 
         app.renderDropdowns();
@@ -84,7 +89,7 @@ window.app = {
     //         const splash = document.getElementById('splash-screen');
     //         const login = document.getElementById('login-screen');
     //         const main = document.getElementById('app-container');
-            
+
     //         if (splash) {
     //             splash.style.opacity = '0';
     //             splash.style.display = 'none';
@@ -92,7 +97,7 @@ window.app = {
     //         if (login) {
     //             login.style.display = 'none';
     //         }
-            
+
     //         // 2. Mostrar contenedor principal ANTES de inicializar el mapa
     //         if (main) {
     //             main.classList.remove('opacity-0');
@@ -111,10 +116,10 @@ window.app = {
 
     //             // Configurar rol como empresa
     //             session.role = 'company';
-                
+
     //             // Inicializar todo el sistema
-                
-                
+
+
     //             console.log("✅ Sistema SIPLoG cargado correctamente");
     //         } catch (error) {
     //             console.error("❌ Error crítico al inicializar:", error);
@@ -134,21 +139,21 @@ window.app = {
     // // 1. INIT - Carga directa al mapa
     // init: async () => {
     //     // 1. Ocultar splash y login
-        
+
     // },
 
     // 2. INGRESAR
     enterSystem: async () => {
         const btn = document.getElementById('btn-enter');
         btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> INICIANDO SESIÓN EMPRESA...';
-        const selectChofer = document.getElementById('driver_selection');    
+        const selectChofer = document.getElementById('driver_selection');
         selectChofer.classList.remove('hidden');
         try {
             btn.removed = true;
             await app.initMap();
             // Intentar cargar ruta real antes de empezar
             await app.calculateRealRoute();
-            
+
             app.initData();
             //DESCOMENTAR
             // app.startSimulation();
@@ -165,7 +170,7 @@ window.app = {
             btn.classList.add('bg-red-600');
         }
     },
-    
+
     //ingresar como invitado
     enterAsGuest: async () => {
         const btn = document.getElementById('btn-enter');
@@ -236,10 +241,10 @@ window.app = {
         document.querySelectorAll('.company-only').forEach(el => {
             el.classList.add('hidden');
         });
-        if(session.role === 'transportista'){
-            const btnRecorrido = document.getElementById('iniciar_recorrido');    
+        if (session.role === 'transportista') {
+            const btnRecorrido = document.getElementById('iniciar_recorrido');
             btnRecorrido.classList.remove('hidden');
-            const selectChofer = document.getElementById('driver_selection');    
+            const selectChofer = document.getElementById('driver_selection');
             selectChofer.classList.add('hidden');
         }
         // Opcional: si quieres ocultar también pestaña "Choferes" completa
@@ -258,26 +263,26 @@ window.app = {
     },
 
     restoreCompanyUI: () => {
-    // Mostrar de nuevo los elementos ocultados por company-only
-    document.querySelectorAll('.company-only').forEach(el => {
-        el.classList.remove('hidden');
-    });
+        // Mostrar de nuevo los elementos ocultados por company-only
+        document.querySelectorAll('.company-only').forEach(el => {
+            el.classList.remove('hidden');
+        });
 
-    // Restaurar pestaña y panel de Choferes
-    const tabDrivers = document.getElementById('tab-drivers');
-    const panelDrivers = document.getElementById('panel-drivers');
-    if (tabDrivers) tabDrivers.classList.remove('hidden');
-    if (panelDrivers) panelDrivers.classList.remove('hidden');
+        // Restaurar pestaña y panel de Choferes
+        const tabDrivers = document.getElementById('tab-drivers');
+        const panelDrivers = document.getElementById('panel-drivers');
+        if (tabDrivers) tabDrivers.classList.remove('hidden');
+        if (panelDrivers) panelDrivers.classList.remove('hidden');
 
-    // Restaurar pestaña y panel de Flota
-    const tabFleet = document.getElementById('tab-fleet');
-    const panelFleet = document.getElementById('panel-fleet');
-    if (tabFleet) tabFleet.classList.remove('hidden');
-    if (panelFleet) panelFleet.classList.remove('hidden');
+        // Restaurar pestaña y panel de Flota
+        const tabFleet = document.getElementById('tab-fleet');
+        const panelFleet = document.getElementById('panel-fleet');
+        if (tabFleet) tabFleet.classList.remove('hidden');
+        if (panelFleet) panelFleet.classList.remove('hidden');
 
-    // Si querés devolver la pestaña activa a "Flota"
-    app.switchTab('fleet');
-},
+        // Si querés devolver la pestaña activa a "Flota"
+        app.switchTab('fleet');
+    },
 
     //ingresar como empresa
     // Mostrar pantalla de login empresa
@@ -290,179 +295,179 @@ window.app = {
             loginScreen.classList.add('flex');
             setTimeout(() => loginScreen.style.opacity = '1', 50);
         }, 700);
-},
+    },
 
-// Volver al splash
-backToSplash() {
-    document.getElementById('login-error').classList.add('hidden');
-    document.getElementById('login-screen').style.opacity = '0';
-    const btn = document.getElementById('btn-enter');
+    // Volver al splash
+    backToSplash() {
+        document.getElementById('login-error').classList.add('hidden');
+        document.getElementById('login-screen').style.opacity = '0';
+        const btn = document.getElementById('btn-enter');
 
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
-    btn.innerHTML = `
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        btn.innerHTML = `
         <span class="relative flex items-center gap-3">
             INICIAR SESIÓN
             <span class="material-symbols-outlined">arrow_forward</span>
         </span>
     `;
 
-    setTimeout(() => {
-
-        // OCULTAR TODO inmediatamente ANTES de restaurar UI
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('login-screen').classList.remove('flex');
-
-        const splash = document.getElementById('splash-screen');
-
-        // splash aparece pero INVISIBLE
-        splash.style.display = 'flex';
-        splash.style.opacity = '0';
-
-        // Forzar layout para que la transición funcione
-        splash.getBoundingClientRect();
-
-        // AHORA sí iniciamos el fade-in
-        splash.style.opacity = '1';
-
-        // ⬅ ESPERAR hasta que el fade-in termine
         setTimeout(() => {
-            this.restoreCompanyUI(); // ahora NO SE VE NADA
-            this.init();
-        }, 500); // ← PONÉ ACÁ EL MISMO tiempo de transición de tu splash
 
-    }, 700);
-
-},
-
-// Procesar login empresa
-login(event) {
-
-    event.preventDefault();
-
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const errorDiv = document.getElementById('login-error');
-
-
-    // const username = "si";
-    // const password = "si"
-    // const errorDiv = document.getElementById('login-error');
-
-
-    // Aquí puedes validar contra tu backend
-    // Por ahora, simulamos una validación simple
-    if (username && password) {
-        // Login exitoso
-        document.getElementById('login-screen').style.opacity = '0';
-        setTimeout(() => {
-            
+            // OCULTAR TODO inmediatamente ANTES de restaurar UI
             document.getElementById('login-screen').classList.add('hidden');
-            // Aquí va tu código para mostrar la vista de empresa
-            if(username === usuario_empresa.username && password === usuario_empresa.password){
-                session.role = 'company';
-                rol = "EMPRESA";
-                console.log('Ingresando al sistema como empresa...');
-                app.enterSystem()
-            }
-            else if(username === usuario_transportista.username && password === usuario_transportista.password){
-                session.role = 'transportista';
-                rol = "TRANSPORTISTA";
-                console.log('Ingresando al sistema como transportista...');
-                app.enterAsTransportista();
-            }
-            else if(username === usuario_invitado.username && password === usuario_invitado.password){
-                session.role = 'guest';
-                rol = "INVITADO";
-                console.log('Ingresando al sistema como invitado...');
-                app.enterAsGuest();
-            }else{
-                // Mostrar error
-                errorDiv.classList.remove('hidden');
-                setTimeout(() => errorDiv.classList.add('hidden'), 3000);
-                return;
-            }
-            document.getElementById("user-role").textContent = rol; 
+            document.getElementById('login-screen').classList.remove('flex');
+
+            const splash = document.getElementById('splash-screen');
+
+            // splash aparece pero INVISIBLE
+            splash.style.display = 'flex';
+            splash.style.opacity = '0';
+
+            // Forzar layout para que la transición funcione
+            splash.getBoundingClientRect();
+
+            // AHORA sí iniciamos el fade-in
+            splash.style.opacity = '1';
+
+            // ⬅ ESPERAR hasta que el fade-in termine
+            setTimeout(() => {
+                this.restoreCompanyUI(); // ahora NO SE VE NADA
+                this.init();
+            }, 500); // ← PONÉ ACÁ EL MISMO tiempo de transición de tu splash
+
         }, 700);
-    } else {
-        // Mostrar error
-        errorDiv.classList.remove('hidden');
-        setTimeout(() => errorDiv.classList.add('hidden'), 3000);
-    }
-},
+
+    },
+
+    // Procesar login empresa
+    login(event) {
+
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('login-error');
+
+
+        // const username = "si";
+        // const password = "si"
+        // const errorDiv = document.getElementById('login-error');
+
+
+        // Aquí puedes validar contra tu backend
+        // Por ahora, simulamos una validación simple
+        if (username && password) {
+            // Login exitoso
+            document.getElementById('login-screen').style.opacity = '0';
+            setTimeout(() => {
+
+                document.getElementById('login-screen').classList.add('hidden');
+                // Aquí va tu código para mostrar la vista de empresa
+                if (username === usuario_empresa.username && password === usuario_empresa.password) {
+                    session.role = 'company';
+                    rol = "EMPRESA";
+                    console.log('Ingresando al sistema como empresa...');
+                    app.enterSystem()
+                }
+                else if (username === usuario_transportista.username && password === usuario_transportista.password) {
+                    session.role = 'transportista';
+                    rol = "TRANSPORTISTA";
+                    console.log('Ingresando al sistema como transportista...');
+                    app.enterAsTransportista();
+                }
+                else if (username === usuario_invitado.username && password === usuario_invitado.password) {
+                    session.role = 'guest';
+                    rol = "INVITADO";
+                    console.log('Ingresando al sistema como invitado...');
+                    app.enterAsGuest();
+                } else {
+                    // Mostrar error
+                    errorDiv.classList.remove('hidden');
+                    setTimeout(() => errorDiv.classList.add('hidden'), 3000);
+                    return;
+                }
+                document.getElementById("user-role").textContent = rol;
+            }, 700);
+        } else {
+            // Mostrar error
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => errorDiv.classList.add('hidden'), 3000);
+        }
+    },
 
     populateDriverSelect: () => {
-    const select = document.getElementById('select-driver');
-    const warning = document.getElementById('no-free-drivers');
-    if (!select) return;
+        const select = document.getElementById('select-driver');
+        const warning = document.getElementById('no-free-drivers');
+        if (!select) return;
 
-    select.innerHTML = '';
+        select.innerHTML = '';
 
-    const freeDrivers = drivers.filter(d => !d.assigned);
+        const freeDrivers = drivers.filter(d => !d.assigned);
 
-    if (freeDrivers.length === 0) {
-        const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'Sin choferes disponibles';
-        opt.disabled = true;
-        opt.selected = true;
-        select.appendChild(opt);
-        if (warning) warning.classList.remove('hidden');
-    } else {
-        if (warning) warning.classList.add('hidden');
-
-        const optDefault = document.createElement('option');
-        optDefault.value = '';
-        optDefault.textContent = 'Selecciona un chofer...';
-        optDefault.disabled = true;
-        optDefault.selected = true;
-        select.appendChild(optDefault);
-
-        freeDrivers.forEach(d => {
+        if (freeDrivers.length === 0) {
             const opt = document.createElement('option');
-            opt.value = d.id;
-            opt.textContent = `${d.name} (${d.dni})`;
+            opt.value = '';
+            opt.textContent = 'Sin choferes disponibles';
+            opt.disabled = true;
+            opt.selected = true;
             select.appendChild(opt);
-        });
-    }
-},
+            if (warning) warning.classList.remove('hidden');
+        } else {
+            if (warning) warning.classList.add('hidden');
+
+            const optDefault = document.createElement('option');
+            optDefault.value = '';
+            optDefault.textContent = 'Selecciona un chofer...';
+            optDefault.disabled = true;
+            optDefault.selected = true;
+            select.appendChild(optDefault);
+
+            freeDrivers.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = `${d.name} (${d.dni})`;
+                select.appendChild(opt);
+            });
+        }
+    },
 
     populateTransportSelect: () => {
-    const select = document.getElementById('select-transport');
-    const warning = document.getElementById('no-free-transports');
-    if (!select) return;
+        const select = document.getElementById('select-transport');
+        const warning = document.getElementById('no-free-transports');
+        if (!select) return;
 
-    select.innerHTML = '';
+        select.innerHTML = '';
 
-    const freeTransports = transports.filter(d => !d.assigned);
+        const freeTransports = transports.filter(d => !d.assigned);
 
-    if (freeTransports.length === 0) {
-        const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'Sin transportes disponibles';
-        opt.disabled = true;
-        opt.selected = true;
-        select.appendChild(opt);
-        if (warning) warning.classList.remove('hidden');
-    } else {
-        if (warning) warning.classList.add('hidden');
-
-        const optDefault = document.createElement('option');
-        optDefault.value = '';
-        optDefault.textContent = 'Selecciona un transporte...';
-        optDefault.disabled = true;
-        optDefault.selected = true;
-        select.appendChild(optDefault);
-
-        freeTransports.forEach(d => {
+        if (freeTransports.length === 0) {
             const opt = document.createElement('option');
-            opt.value = d.id;
-            console.log(d);
-            opt.textContent = `${d.plate} (${d.brand})`;
+            opt.value = '';
+            opt.textContent = 'Sin transportes disponibles';
+            opt.disabled = true;
+            opt.selected = true;
             select.appendChild(opt);
-        });
-    }
-},
+            if (warning) warning.classList.remove('hidden');
+        } else {
+            if (warning) warning.classList.add('hidden');
+
+            const optDefault = document.createElement('option');
+            optDefault.value = '';
+            optDefault.textContent = 'Selecciona un transporte...';
+            optDefault.disabled = true;
+            optDefault.selected = true;
+            select.appendChild(optDefault);
+
+            freeTransports.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                console.log(d);
+                opt.textContent = `${d.plate} (${d.brand})`;
+                select.appendChild(opt);
+            });
+        }
+    },
 
 
     // 3. MAPA
@@ -509,7 +514,7 @@ login(event) {
                 if (status === 'OK') {
                     // Guardamos todos los puntos de la ruta
                     state.routePath = result.routes[0].overview_path;
-                    
+
                     // Dibujar la ruta real
                     new state.google.Polyline({
                         path: state.routePath,
@@ -544,7 +549,7 @@ login(event) {
                     console.warn("Fallo Directions API, usando modo fallback lineal");
                     CONFIG.routeFallback = true;
                     // Dibujar línea recta como fallback
-                        new state.google.Polyline({
+                    new state.google.Polyline({
                         path: NODES.map(n => ({ lat: n.lat, lng: n.lng })),
                         strokeColor: "#6366f1",
                         strokeOpacity: 0.5,
@@ -574,7 +579,7 @@ login(event) {
 
     // 6. LOGICA TRANSPORTE (ACTUALIZADA)
     createRecorrido: (data) => {
-        if(session.role == 'transportista'){
+        if (session.role == 'transportista') {
             data.id_driver = usuario_transportista.id_transportista;
         }
         console.log(data);
@@ -643,12 +648,12 @@ login(event) {
     startSimulation: () => {
         setInterval(() => {
             recorridos.forEach(t => {
-                
+
                 // Lógica de movimiento (existente)
                 if (!CONFIG.routeFallback) {
                     if ((t.direction === 'asc' && t.currentPathIdx >= t.targetPathIdx) ||
                         (t.direction === 'desc' && t.currentPathIdx <= t.targetPathIdx)) {
-                        return; 
+                        return;
                     }
                     t.currentPathIdx += t.speed;
                     const pIdx = Math.floor(t.currentPathIdx);
@@ -657,7 +662,7 @@ login(event) {
                         t.lat = point.lat();
                         t.lng = point.lng();
                         NODES.forEach(n => {
-                            if (Math.abs(n.pathIndex - pIdx) < 20) t.lastNodeName = n.name; 
+                            if (Math.abs(n.pathIndex - pIdx) < 20) t.lastNodeName = n.name;
                         });
                     }
                 }
@@ -673,7 +678,7 @@ login(event) {
                 // Actualizar UI si está seleccionado
                 if (state.selectedId === t.id) app.updateCard(t);
             });
-        }, 50); 
+        }, 50);
     },
 
     openModal: (type) => {
@@ -773,19 +778,19 @@ login(event) {
     },
 
     // === NUEVAS FUNCIONES DE NOTIFICACIÓN ===
-    
+
     checkProximity: (t) => {
         state.alerts.forEach(alert => {
             // Verificar si ya fue notificado de esta alerta específica
-            if(t.notifiedAlerts.has(alert.id)) return;
+            if (t.notifiedAlerts.has(alert.id)) return;
 
             const alertNode = NODES.find(n => n.id === alert.location);
-            if(!alertNode) return;
+            if (!alertNode) return;
 
             // Distancia simple (pitágoras) porque las coord son cercanas
             const dist = Math.sqrt(Math.pow(t.lat - alertNode.lat, 2) + Math.pow(t.lng - alertNode.lng, 2));
 
-            if(dist < CONFIG.alertRadius) {
+            if (dist < CONFIG.alertRadius) {
                 t.notifiedAlerts.add(alert.id); // Marcar como notificado
                 app.showNotification(t, alert);
             }
@@ -795,9 +800,9 @@ login(event) {
     showNotification: (t, alert) => {
         const container = document.getElementById('notification-area');
         const id = 'toast-' + Date.now();
-        
+
         const colorClass = alert.type === 'accident' ? 'bg-red-500' : (alert.type === 'road' ? 'bg-blue-500' : 'bg-amber-500');
-        const icon = alert.type === 'accident' ? 'car_crash' : (alert.type === 'road' ? 'road' : 'warning');
+        const icon = alert.type === 'accident' ? 'car_crash' : (alert.type === 'road' ? 'road' : 'wb_sunny');
 
         const toast = document.createElement('div');
         toast.className = `w-full bg-slate-900 border-l-4 ${colorClass.replace('bg-', 'border-')} shadow-2xl rounded-r-lg p-4 flex items-center gap-4 toast-enter pointer-events-auto`;
@@ -813,6 +818,7 @@ login(event) {
                 <div class="font-bold text-white text-sm leading-tight mt-1">
                     ${alert.title} en zona próxima
                 </div>
+                 <div class="text-[8] text-white mt-1">"${alert.desc}"</div>
             </div>
         `;
 
@@ -871,7 +877,7 @@ login(event) {
 
         list.forEach(d => {
             const plates = recorridos.map(r => r.id_transporte).join(' · ') || 'Sin unidades asignadas';
-            const initials = d.name.split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase();
+            const initials = d.name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase();
 
             const card = document.createElement('div');
             card.className = 'bg-slate-900/60 border border-slate-700 rounded-xl p-3 flex items-center gap-3 hover:border-indigo-500 transition cursor-pointer';
@@ -918,17 +924,17 @@ login(event) {
         document.getElementById('card-plate').innerText = transporte?.plate ?? '';
         document.getElementById('card-driver').innerText = transportista?.name ?? 'Chofer Desconocido';
         document.getElementById('card-speed').innerText = Math.abs(Math.floor(t.speed * 120)) + " km/h"; // Simulando velocidad visual
-        document.getElementById('card-from').innerText = t.lastNodeName || "EN RUTA"; 
-        
+        document.getElementById('card-from').innerText = t.lastNodeName || "EN RUTA";
+
         // Calcular destino nombre
         const destName = t.direction === 'asc' ? 'CHILE (Frontera)' : 'JUJUY (Capital)';
         document.getElementById('card-to').innerText = destName;
 
         // Barra de progreso aproximada
         let pct = 0;
-        if(!CONFIG.routeFallback) {
+        if (!CONFIG.routeFallback) {
             pct = (t.currentPathIdx / state.routePath.length) * 100;
-            if(t.direction === 'desc') pct = 100 - pct; // Invertir barra si baja
+            if (t.direction === 'desc') pct = 100 - pct; // Invertir barra si baja
         }
         document.getElementById('card-progress').style.width = Math.min(Math.max(pct, 0), 100) + "%";
     },
@@ -944,7 +950,7 @@ login(event) {
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData);
         data.driver = `${data.driverName} ${data.driverSurname}`; // Unir campos
-        
+
         app.createRecorrido(data);
         app.renderFleetList();
         app.closeModal('transport');
@@ -968,9 +974,9 @@ login(event) {
 
     createAlertMarker: (a) => {
         const el = document.createElement('div');
-        const color = a.type === 'accident' ? 'text-red-500' : (a.type === 'road' ? 'text-blue-500' : 'text-amber-500');
-        const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'road' ? 'road' : 'warning');
-        el.innerHTML = `<span class="material-symbols-outlined ${color} text-3xl drop-shadow-md animate-bounce">${icon}</span>`;
+        const color = a.type === 'accident' ? 'text-red-500' : (a.type === 'road' ? 'text-blue-700' : 'text-amber-500');
+        const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'road' ? 'road' : 'wb_sunny');
+        el.innerHTML = `<span class="material-symbols-outlined ${color} text-4xl drop-shadow-md animate-bounce">${icon}</span>`;
 
         const loc = NODES.find(n => n.id === a.location);
         if (loc) {
@@ -1009,7 +1015,7 @@ login(event) {
         list.innerHTML = state.alerts.map(a => {
             const loc = NODES.find(n => n.id === a.location)?.name || 'Ruta';
             const color = a.type === 'accident' ? 'red' : (a.type === 'road' ? 'blue' : 'amber');
-            const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'road' ? 'road' : 'warning');
+            const icon = a.type === 'accident' ? 'car_crash' : (a.type === 'road' ? 'road' : 'wb_sunny');
             return `
             <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-${color}-500 mb-2 cursor-pointer hover:bg-slate-750 transition shadow-sm group">
                 <div class="flex justify-between items-start mb-1">
